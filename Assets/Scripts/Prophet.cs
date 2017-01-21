@@ -24,7 +24,7 @@ public class Prophet : Node {
 	}
 
 	private IEnumerator DoMoveProphet(Vector3 newLocation) {
-		float speed = 0.2f;
+		float speed = 10f;
 		while (transform.position != newLocation) {
 			float step = speed * Time.deltaTime;
 			transform.position = Vector3.MoveTowards (transform.position, newLocation, step);
