@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Node : MonoBehaviour {
 
-//	[SerializeField]
-//	private Player owner;
+	[SerializeField]
+	private Player owner;
 
 	[SerializeField]
 	private int topHealth = 10;
@@ -46,6 +46,16 @@ public class Node : MonoBehaviour {
 	public int InfluenceWeight {
 		get {
 			return influenceWeight;
+		}
+	}
+
+	private Vector2 gridPosition;
+	public Vector2 GridPosition {
+		get {
+			return gridPosition;
+		}
+		set {
+			gridPosition = value;
 		}
 	}
 
