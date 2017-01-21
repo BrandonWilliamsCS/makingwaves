@@ -17,6 +17,11 @@ public class Node : MonoBehaviour {
 
 	[SerializeField]
 	private int healthThreshold = 7;
+	/// <summary>
+	/// Gets the health threshold.
+	/// This is how many influence points it takes before we can emit influence
+	/// </summary>
+	/// <value>The health threshold.</value>
 	public int HealthThreshold {
 		get {
 			return healthThreshold;
@@ -24,10 +29,23 @@ public class Node : MonoBehaviour {
 	}
 
 	[SerializeField]
-	private int currentHealth = 0; // Current health 0 denotes a neutral node
+	private int currentHealth = 0;
+	/// <summary>
+	/// Gets the current health.
+	/// Current health 0 denotes a neutral node
+	/// </summary>
+	/// <value>The current health.</value>
 	public int CurrentHealth {
 		get {
 			return currentHealth;
+		}
+	}
+
+	[SerializeField]
+	private int influenceWeight = 1;
+	public int InfluenceWeight {
+		get {
+			return influenceWeight;
 		}
 	}
 
@@ -39,5 +57,9 @@ public class Node : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+	public void EmitInfluence() {
+		// TODO fire particle effect
 	}
 }
