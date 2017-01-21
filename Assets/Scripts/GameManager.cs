@@ -8,12 +8,16 @@ public class GameManager : MonoBehaviour {
 	public static GameManager Instance {
 		get {
 			if(instance == null) {
-				instance = ScriptableObject.CreateInstance<GameManager>();
+				instance = GameObject.FindObjectOfType<GameManager> ();
 			}
-
+			if (instance == null) {
+				instance = new GameObject ().AddComponent<GameManager> ();
+			}
 			return instance;
 		}
 	}
+
+
 
 	[SerializeField]
 	private GameObject nodePrefab;
@@ -23,14 +27,14 @@ public class GameManager : MonoBehaviour {
 	/// Vector2 is the Grid Position of a specific Node for easy lookup.
 	/// </summary>
 	[SerializeField]
-	private Dictionary<Vector2, Node> nodes = new Dictionary<Vector3, Node> ();
+	private Dictionary<Vector2, Node> nodes = new Dictionary<Vector2, Node> ();
 
 	/// <summary>
 	/// The current neutral nodes.
 	/// Vector2 is the Grid Position of a specific Node for easy lookup.
 	/// </summary>
 	[SerializeField]
-	private Dictionary<Vector2, Node> neutralNodes = new Dictionary<Vector3, Node> ();
+	private Dictionary<Vector2, Node> neutralNodes = new Dictionary<Vector2, Node> ();
 
 	/// <summary>
 	/// All the players in the game
