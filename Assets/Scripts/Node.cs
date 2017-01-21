@@ -85,4 +85,31 @@ public class Node : MonoBehaviour {
 			InfluenceEmitter.Play();
 		}
 	}
+
+	#region Model
+	public int boardX;
+	public int boardY;
+
+	public override bool Equals (object obj)
+	{
+		var otherNode = obj as Node;
+		if (otherNode == null)
+		{
+			return false;
+		}
+		
+		return boardX == otherNode.boardX && boardY == otherNode.boardY; 
+	}
+	
+	public override int GetHashCode()
+	{
+		return boardX * 10000 + boardY;
+	}
+	#endregion
+
+	private class Edge
+	{
+		public Node Left { get; set; }
+		public Node Right { get; set; }
+	}
 }
