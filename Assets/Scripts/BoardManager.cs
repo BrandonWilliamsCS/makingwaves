@@ -13,7 +13,6 @@ public class BoardManager : MonoBehaviour
 	void Start ()
 	{
 		MakeNodes();
-		// TODO: generate board
 	}
 	
 	// Update is called once per frame
@@ -21,6 +20,35 @@ public class BoardManager : MonoBehaviour
 	{
 		
 	}
+
+	private IEnumerator Test()
+	{
+		foreach (var nodePair in nodes)
+		{
+			var node = nodePair.Value;
+			var nodeSpriteRenderer = node.gameObject.GetComponent<SpriteRenderer> ();
+			nodeSpriteRenderer.color = Color.blue;
+			foreach (var connection in node.edges) {
+				var edge = connection.Value;
+				var otherSpriteRenderer = edge.Follow(connection.Key).gameObject.GetComponent<SpriteRenderer> ();
+				otherSpriteRenderer.color = Color.red;
+			}
+			yield return new WaitForSeconds (0.5f);
+			nodeSpriteRenderer.color = Color.white;
+			foreach (var connection in node.edges) {
+				var otherNode = connection.Value;
+				var otherSpriteRenderer = otherNode.Follow(connection.Key).gameObject.GetComponent<SpriteRenderer> ();
+				otherSpriteRenderer.color = Color.white;
+			}
+		}
+	}
+
+	/// <summary>
+	/// All the nodes in the game. 
+	/// Vector2 is the Grid Position of a specific Node for easy lookup.
+	/// </summary>
+	//[SerializeField]
+	private Dictionary<Vector2, Node> nodes = new Dictionary<Vector2, Node> ();
 
 	private void MakeNodes ()
 	{
@@ -35,14 +63,31 @@ public class BoardManager : MonoBehaviour
 			for (var j = 0; j < columns; j++)
 			{
 				if (!boardArray[i][j]) continue;
-				var worldI = rows - 1 - i;
-				var worldPosition = new Vector2(halfRoot3 * (0.5f * (worldI % 2) + j), 0.75f * worldI);
+				var gridX = j;
+				var gridY = rows - 1 - i;
+
+				// create the node at the proper place in the world
+				var worldPosition = new Vector2(halfRoot3 * (0.5f * (gridY % 2) + gridX), 0.75f * gridY);
 				var node = Instantiate(nodePrefab, worldPosition, Quaternion.identity, transform);
+
+				// track the node and keep its grid position
 				var nodeScript = node.GetComponent<Node>();
+				var gridPosition = new Vector2 (gridX, gridY);
+				nodeScript.GridPosition = gridPosition;
+				nodes[gridPosition] = nodeScript;
 			}
 		}
 
 		// connect nodes as edges
+		ComputeNeighbors();
+	}
+
+	private void ComputeNeighbors ()
+	{
+		foreach (var node in nodes.Values)
+		{
+			node.ComputeNeighbors ();
+		}
 	}
 
 	private bool[][] GetBoardArray(string fileName)
