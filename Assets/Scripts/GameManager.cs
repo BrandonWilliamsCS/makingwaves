@@ -21,18 +21,6 @@ public class GameManager : MonoBehaviour {
 	private GameObject nodePrefab;
 
 	/// <summary>
-	/// All the nodes in the game. 
-	/// Vector2 is the Grid Position of a specific Node for easy lookup.
-	/// </summary>
-	private Dictionary<Vector2, Node> nodes = new Dictionary<Vector2, Node> ();
-
-	/// <summary>
-	/// The current neutral nodes.
-	/// Vector2 is the Grid Position of a specific Node for easy lookup.
-	/// </summary>
-	private Dictionary<Vector2, Node> neutralNodes = new Dictionary<Vector2, Node> ();
-
-	/// <summary>
 	/// All the players in the game
 	/// </summary>
 	List<Player> players = new List<Player>();
