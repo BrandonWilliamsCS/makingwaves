@@ -62,4 +62,31 @@ public class Node : MonoBehaviour {
 	public void EmitInfluence() {
 		// TODO fire particle effect
 	}
+
+	#region Model
+	public int boardX;
+	public int boardY;
+
+	public override bool Equals (object obj)
+	{
+		var otherNode = obj as Node;
+		if (otherNode == null)
+		{
+			return false;
+		}
+		
+		return boardX == otherNode.boardX && boardY == otherNode.boardY; 
+	}
+	
+	public override int GetHashCode()
+	{
+		return boardX * 10000 + boardY;
+	}
+	#endregion
+
+	private class Edge
+	{
+		public Node Left { get; set; }
+		public Node Right { get; set; }
+	}
 }
