@@ -5,18 +5,18 @@ using UnityEngine;
 public class Node : MonoBehaviour {
 
 	[SerializeField]
-	private Player owner;
+	private Player Owner;
 
 	[SerializeField]
-	private int topHealth = 10;
+	private int _topHealth = 10;
 	public int TopHealth {
 		get {
-			return topHealth;
+			return _topHealth;
 		}
 	}
 
 	[SerializeField]
-	private int healthThreshold = 7;
+	private int _healthThreshold = 7;
 	/// <summary>
 	/// Gets the health threshold.
 	/// This is how many influence points it takes before we can emit influence
@@ -24,12 +24,12 @@ public class Node : MonoBehaviour {
 	/// <value>The health threshold.</value>
 	public int HealthThreshold {
 		get {
-			return healthThreshold;
+			return _healthThreshold;
 		}
 	}
 
 	[SerializeField]
-	private int currentHealth = 0;
+	private int _currentHealth = 0;
 	/// <summary>
 	/// Gets the current health.
 	/// Current health 0 denotes a neutral node
@@ -37,31 +37,41 @@ public class Node : MonoBehaviour {
 	/// <value>The current health.</value>
 	public int CurrentHealth {
 		get {
-			return currentHealth;
+			return _currentHealth;
 		}
 	}
 
 	[SerializeField]
-	private int influenceWeight = 1;
+	private int _influenceWeight = 1;
 	public int InfluenceWeight {
 		get {
-			return influenceWeight;
+			return _influenceWeight;
 		}
 	}
 
-	private Vector2 gridPosition;
+	private Vector2 _gridPosition;
 	public Vector2 GridPosition {
 		get {
-			return gridPosition;
+			return _gridPosition;
 		}
 		set {
-			gridPosition = value;
+			_gridPosition = value;
+		}
+	}
+
+	private ParticleSystem _influenceEmitter;
+	private ParticleSystem InfluenceEmitter {
+		get {
+			if (_influenceEmitter == null) {
+				_influenceEmitter = GetComponentInChildren<ParticleSystem> ();
+			}
+			return _influenceEmitter;
 		}
 	}
 
 	// Use this for initialization
 	void Start () {
-		
+		EmitInfluence ();
 	}
 	
 	// Update is called once per frame
@@ -70,6 +80,9 @@ public class Node : MonoBehaviour {
 	}
 
 	public void EmitInfluence() {
+		if (InfluenceEmitter != null) {
 		// TODO fire particle effect
+			InfluenceEmitter.Play();
+		}
 	}
 }
