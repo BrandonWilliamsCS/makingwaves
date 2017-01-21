@@ -69,6 +69,16 @@ public class Node : MonoBehaviour {
 		}
 	}
 
+	private SpriteRenderer _spriteRenderer;
+	private SpriteRenderer MySpriteRenderer {
+		get {
+			if (_spriteRenderer == null) {
+				_spriteRenderer = this.GetComponent<SpriteRenderer> ();
+			}
+			return _spriteRenderer;
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
 		EmitInfluence ();
@@ -81,7 +91,10 @@ public class Node : MonoBehaviour {
 
 	public void EmitInfluence() {
 		if (InfluenceEmitter != null) {
-		// TODO fire particle effect
+			if (MySpriteRenderer != null) {
+				var main = InfluenceEmitter.main;
+				main.startColor = MySpriteRenderer.color;
+			}
 			InfluenceEmitter.Play();
 		}
 	}

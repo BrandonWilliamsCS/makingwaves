@@ -17,8 +17,6 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-
-
 	[SerializeField]
 	private GameObject nodePrefab;
 
@@ -26,30 +24,39 @@ public class GameManager : MonoBehaviour {
 	/// All the nodes in the game. 
 	/// Vector2 is the Grid Position of a specific Node for easy lookup.
 	/// </summary>
-	[SerializeField]
 	private Dictionary<Vector2, Node> nodes = new Dictionary<Vector2, Node> ();
 
 	/// <summary>
 	/// The current neutral nodes.
 	/// Vector2 is the Grid Position of a specific Node for easy lookup.
 	/// </summary>
-	[SerializeField]
 	private Dictionary<Vector2, Node> neutralNodes = new Dictionary<Vector2, Node> ();
 
 	/// <summary>
 	/// All the players in the game
 	/// </summary>
-	[SerializeField]
 	List<Player> players = new List<Player>();
 
 	// Use this for initialization
 	void Start () {
 		// Call the NodeGenerator to generate all the node game objects into the scene
+
+		Player player1 = new GameObject ("Player").AddComponent<Player> ();
+		players.Add (player1);
+
+		Prophet prophet = FindObjectOfType<Prophet> ();
+		player1.Prophets.Add (prophet);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+		if (Input.GetMouseButtonUp (0)) {
+			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+			Node node = hit.transform.GetComponent<Node> ();
+			if (node != null) {
+				players [0].Prophets [0].MoveProphet (node);
+			}
+		}
 	}
 
 	void OnDestroy() {
