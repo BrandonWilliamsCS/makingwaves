@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour {
 			MakePlayer (start);
 		}
 		SetButtonColor (playerColors[currentPlayer + 1]);
-		//TestCase1 (); //!!
+		GivePlayersHomes (); //!!
 	}
 
 	private Player MakePlayer(Vector2 start)
@@ -148,7 +148,7 @@ public class GameManager : MonoBehaviour {
 		// If current health > 0, move from the neutralList into the Node.Player.Nodes list.
 	}
 
-	public void TestCase1()
+	public void GivePlayersHomes()
 	{
 		board.GetNodeAt (new Vector2(0, 0)).TestInteraction(players[1], 10);
 		board.GetNodeAt (new Vector2(9, 9)).TestInteraction(players[2], 10);
