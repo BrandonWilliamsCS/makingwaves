@@ -26,6 +26,9 @@ public class Node : MonoBehaviour
 	};
 	#endregion
 
+	private TextMesh debugText;
+	public string DebugText { get { return debugText.text; } set { debugText.text = value; } }
+
 	[SerializeField]
 	private Player Leader;
 
@@ -120,7 +123,11 @@ public class Node : MonoBehaviour
 		}
 	}
 
-	// Use this for initialization
+	void Awake()
+	{
+		debugText = GetComponentInChildren <TextMesh>();
+	}
+
 	void Start()
 	{
 		//Evangelize ();

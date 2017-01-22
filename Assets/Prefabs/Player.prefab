@@ -96,7 +96,7 @@ Transform:
   m_GameObject: {fileID: 1352416092508608}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children:
   - {fileID: 4207636771751904}
   m_Father: {fileID: 4168938727138242}
@@ -113,6 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8ba6ed6d01e94ce190eb521f226f681, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _conversionRateMultiplier: 1
 --- !u!114 &114929437723454174
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -124,11 +125,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4acc6bb7fea1f45d08284e5842db0e4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 0}
+  Leader: {fileID: 0}
   _topHealth: 10
-  _healthThreshold: 7
+  _evangelismThreshold: 7
+  _ownershipThreshold: 3
   _currentHealth: 0
-  _influenceWeight: 1
+  _conversionStrength: 1
 --- !u!198 &198772159801299526
 ParticleSystem:
   m_ObjectHideFlags: 1

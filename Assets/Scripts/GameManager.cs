@@ -77,8 +77,13 @@ public class GameManager : MonoBehaviour {
 				Node node = hit.transform.GetComponent<Node> ();
 				players [currentPlayer + 1].Prophets [0].MoveProphet (node);
 				currentPlayer = (currentPlayer + 1) % (players.Count - 1);
+				node.DebugText = "!!!";
 			}
 		}
+	}
+
+	public void OnReadyPressed()
+	{
 	}
 
 	void OnDestroy() {
