@@ -93,5 +93,7 @@ public class Prophet : Node
                 }
             }
         }
-    }
+	}
+
+	protected override bool IsFloor { get { return false; } }
 }

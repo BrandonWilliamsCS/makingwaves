@@ -8,21 +8,21 @@ public class Node : MonoBehaviour
 
     #region Vectors to neighbors
     public static readonly float ROOT_3 = Mathf.Sqrt(3);
-    public static readonly Vector2 TO_1_OCLOCK = new Vector2(ROOT_3 / 4, 0.75f);
-    public static readonly Vector2 TO_3_OCLOCK = new Vector2(ROOT_3 / 2, 0);
-    public static readonly Vector2 TO_5_OCLOCK = Vector2.Scale(TO_1_OCLOCK, new Vector2(1, -1));
-    public static readonly Vector2 TO_7_OCLOCK = Vector2.Scale(TO_1_OCLOCK, new Vector2(-1, -1));
-    public static readonly Vector2 TO_9_OCLOCK = -1 * new Vector2(1, ROOT_3);
-    public static readonly Vector2 TO_11_OCLOCK = Vector2.Scale(TO_1_OCLOCK, new Vector2(-1, 1));
+    public static readonly Vector2 TO_12_OCLOCK = new Vector2(0, ROOT_3 / 2);
+    public static readonly Vector2 TO_2_OCLOCK = new Vector2(0.75f, ROOT_3 / 4);
+    public static readonly Vector2 TO_4_OCLOCK = Vector2.Scale(TO_2_OCLOCK, new Vector2(1, -1));
+    public static readonly Vector2 TO_6_OCLOCK = TO_12_OCLOCK;
+    public static readonly Vector2 TO_8_OCLOCK = Vector2.Scale(TO_2_OCLOCK, new Vector2(-1, -1));
+    public static readonly Vector2 TO_10_OCLOCK = Vector2.Scale(TO_2_OCLOCK, new Vector2(-1, 1));
 
     public static readonly IDictionary<int, Vector2> DIRECTIONS = new Dictionary<int, Vector2>()
     {
-        { 1, TO_1_OCLOCK },
-        { 3, TO_3_OCLOCK },
-        { 5, TO_5_OCLOCK },
-        { 7, TO_7_OCLOCK },
-        { 9, TO_9_OCLOCK },
-        { 11, TO_11_OCLOCK }
+        { 0, TO_12_OCLOCK },
+        { 2, TO_2_OCLOCK },
+        { 4, TO_4_OCLOCK },
+        { 6, TO_6_OCLOCK },
+        { 8, TO_8_OCLOCK },
+        { 10, TO_10_OCLOCK }
     };
     #endregion
 
@@ -104,7 +104,7 @@ public class Node : MonoBehaviour
         set
         {
             _currentHealth = value;
-			if (IsOwned) {
+			if (IsOwned && IsFloor) {
 				MySpriteRenderer.sprite = Leader.TileSprite;
 			}
         }
@@ -312,7 +312,7 @@ public class Node : MonoBehaviour
         }
         _currentHealth = _calculatedHealth;
 
-        DebugText = string.Format("{0:g2}", _currentHealth);
+		DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
         debugText.color = _leader == null ? Color.black : _leader.Color;
     }
 
@@ -364,6 +364,8 @@ public class Node : MonoBehaviour
     }
     #endregion
 
+	protected virtual bool IsFloor { get { return true; } }
+
 
     public void TestNode(bool color)
     {
@@ -386,7 +388,7 @@ public class Node : MonoBehaviour
     {
         _leader = player;
         _currentHealth = health;
-        DebugText = string.Format("{0:g2}", _currentHealth, _leader == null ? '-' : _leader.Color.ToString()[0], ConversionStrength);
+		DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
         debugText.color = _leader == null ? Color.black : _leader.Color;
     }
 }
