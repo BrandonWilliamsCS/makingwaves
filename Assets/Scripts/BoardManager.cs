@@ -60,7 +60,7 @@ public class BoardManager : MonoBehaviour
                 var gridY = gridPosition.y;
 
                 // create the node at the proper place in the world
-                var worldPosition = new Vector2(halfRoot3 * (0.5f * (gridY % 2) + gridX), 0.75f * gridY);
+                var worldPosition = new Vector2(0.75f * gridY, halfRoot3 * (0.5f * (gridY % 2) + gridX)); 
                 var node = Instantiate(nodePrefab, worldPosition, Quaternion.identity, transform);
 
                 // track the node and keep its grid position
