@@ -17,7 +17,20 @@ public class Prophet : Node {
 		}
 	}
 
-	public Color Color { get { return MySpriteRenderer.color; } set { MySpriteRenderer.color = new Color(value.r, value.g, value.b, 0.3f); } }
+	private SpriteRenderer _spriteRenderer;
+	protected override SpriteRenderer MySpriteRenderer
+	{
+		get
+		{
+			if (_spriteRenderer == null)
+			{
+				_spriteRenderer = this.GetComponentInChildren<SpriteRenderer>();
+			}
+			return _spriteRenderer;
+		}
+	}
+
+	public Color Color { get { return MySpriteRenderer.color; } set { MySpriteRenderer.color = value /* new Color(value.r, value.g, value.b, 0.3f)*/; } }
 
 	// Update is called once per frame
 	void Update () {

@@ -122,7 +122,7 @@ public class Node : MonoBehaviour
 	}
 
 	private SpriteRenderer _spriteRenderer;
-	protected SpriteRenderer MySpriteRenderer
+	protected virtual SpriteRenderer MySpriteRenderer
 	{
 		get
 		{

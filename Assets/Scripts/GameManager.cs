@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public static readonly Color[] COLORS = new Color[] {
+	public static readonly Color[] COLORS_DEP = new Color[] {
 		Color.gray,
 		Color.red,
 		Color.green,
@@ -26,8 +26,13 @@ public class GameManager : MonoBehaviour {
 		Color.magenta,
 	};
 
+	// set from editor
 	[SerializeField]
 	private GameObject playerPrefab;
+	public Color[] playerColors;
+	public Sprite[] prophetSprites;
+	public Sprite[] ownerTiles;
+
 	private BoardManager board;
 	private Image buttonOverlay;
 	public IList<Vector2> PlayerStarts { get; set; }
@@ -50,7 +55,7 @@ public class GameManager : MonoBehaviour {
 		{
 			MakePlayer (start);
 		}
-		SetButtonColor (COLORS[currentPlayer + 1]);
+		SetButtonColor (playerColors[currentPlayer + 1]);
 		//TestCase1 (); //!!
 	}
 
@@ -58,11 +63,12 @@ public class GameManager : MonoBehaviour {
 	{
 		var playerObject = Instantiate(playerPrefab);
 		var player = playerObject.GetComponent<Player>();
-		player.Color = COLORS[players.Count];
-		players.Add(player);
+		Debug.Log (playerColors.Length);
+		player.Color = playerColors[players.Count];
 
         // deal with prophets
         Prophet prophet = player.GetComponentInChildren<Prophet>();
+		prophet.GetComponentInChildren<SpriteRenderer> ().sprite = prophetSprites [players.Count];
         prophet.Color = player.Color;
         prophet.Leader = player;
         prophet.CurrentHealth = prophet.TopHealth;
@@ -76,8 +82,9 @@ public class GameManager : MonoBehaviour {
         else
         {
             prophet.gameObject.SetActive(false);
-        }
+		}
 
+		players.Add(player);
         return player;
 	}
 
@@ -98,7 +105,7 @@ public class GameManager : MonoBehaviour {
 	{
 		currentPlayer = (currentPlayer + 1) % (players.Count - 1);
 		playerMoved = false;
-		SetButtonColor (COLORS[currentPlayer + 1]);
+		SetButtonColor (playerColors[currentPlayer + 1]);
 		// if we haven't cylced back to red's turn, don't compute
 		if (currentPlayer != 0)
 			return;
