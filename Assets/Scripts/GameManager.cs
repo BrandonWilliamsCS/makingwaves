@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour {
 		{
 			MakePlayer (start);
 		}
-		TestCase1 (); //!!
+		//TestCase1 (); //!!
 	}
 
 	private Player MakePlayer(Vector2 start)
@@ -59,10 +59,13 @@ public class GameManager : MonoBehaviour {
         // deal with prophets
         Prophet prophet = player.GetComponentInChildren<Prophet>();
         prophet.Color = player.Color;
+        prophet.Leader = player;
+        prophet.CurrentHealth = prophet.TopHealth;
         if (start.x >= 0)
         {
             var node = board.GetNodeAt(start);
             prophet.CurrentNode = node;
+            prophet.transform.position = node.transform.position;
             player.Prophets.Add(prophet);
         }
         else
