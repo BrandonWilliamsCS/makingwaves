@@ -138,7 +138,9 @@ public class Node : MonoBehaviour
 
 	}
 
-	public void ComputeNeighbors()
+    private IList<Node> neighbors = new List<Node>();
+
+    public void ComputeNeighbors()
 	{
 		var collider = GetComponent<PolygonCollider2D>();
 		foreach (var clockDirection in DIRECTIONS)
@@ -156,8 +158,16 @@ public class Node : MonoBehaviour
 			edges[clockDirection.Value] = edge;
 			var oppositeDirection = DIRECTIONS[(clockDirection.Key + 6) % 12];
 			otherNode.edges[oppositeDirection] = edge;
-		}
+
+            neighbors.Add(otherNode);
+            otherNode.neighbors.Add(this);
+        }
 	}
+
+    public bool IsNeighbor(Node node)
+    {
+        return neighbors.Contains(node);
+    }
 
 	public void Evangelize()
 	{
@@ -176,9 +186,8 @@ public class Node : MonoBehaviour
 		float neutralConversionRateMultiplier = .1f;
 		if (_calculatedHealth > 0f)
 		{
-			foreach (var edgePair in edges)
+			foreach (var neighbor in neighbors)
 			{
-				Node neighbor = edgePair.Value.Follow(edgePair.Key);
 				if (neighbor.CanEvangelize)
 				{
 					if (Leader == neighbor.Leader)
@@ -203,9 +212,8 @@ public class Node : MonoBehaviour
 		{
 			IDictionary<Player, float> influenceScore = new Dictionary<Player, float>();
 			float neutralInfluence = 0;
-			foreach (var edgePair in edges)
+			foreach (var neighbor in neighbors)
 			{
-				Node neighbor = edgePair.Value.Follow(edgePair.Key);
 				if (neighbor.CanEvangelize)
 				{
 					if (influenceScore.ContainsKey(neighbor.Leader))
@@ -267,7 +275,7 @@ public class Node : MonoBehaviour
 		}
 		_currentHealth = _calculatedHealth;
 
-		DebugText = string.Format ("{0:g2}", _currentHealth, Leader == null ? '-' : Leader.Color.ToString()[0], ConversionStrength);
+		DebugText = string.Format ("{0}{1}{2}", _currentHealth, Leader.Color.ToString()[0], ConversionStrength);
 		debugText.color = Leader == null ? Color.black : Leader.Color;
 	}
 
@@ -329,6 +337,7 @@ public class Node : MonoBehaviour
 //			var otherSpriteRenderer = edge.Follow(connection.Key).gameObject.GetComponent<SpriteRenderer> ();
 //			otherSpriteRenderer.color = color ? Color.red : Color.white;
 //		}
+
 		foreach (var n in neighbors) {
 			var otherSpriteRenderer = n.gameObject.GetComponent<SpriteRenderer> ();
 			otherSpriteRenderer.color = color ? Color.red : Color.white;
