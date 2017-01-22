@@ -4,10 +4,24 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-	/// <summary>
-	/// The nodes owned by this player
-	/// </summary>
-	private Dictionary<Vector3, Node> nodes = new Dictionary<Vector3, Node>();
+    [SerializeField]
+    private float _conversionRateMultiplier = 1.0f;
+    /// <summary>
+    /// Gets the player multiplier for evangalizing.
+    /// </summary>
+    /// <value>The current health.</value>
+    public float ConversionRateMultiplier
+    {
+        get
+        {
+            return _conversionRateMultiplier;
+        }
+    }
+
+    /// <summary>
+    /// The nodes owned by this player
+    /// </summary>
+    private Dictionary<Vector3, Node> nodes = new Dictionary<Vector3, Node>();
 
 	private List<Prophet> prophets = new List<Prophet> ();
 	public List<Prophet> Prophets {
