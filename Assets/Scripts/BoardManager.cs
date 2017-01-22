@@ -11,7 +11,8 @@ public class BoardManager : MonoBehaviour
 
     // Use this for initialization
     void Awake()
-    {
+	{
+		nodes = new Dictionary<Vector2, Node>();
         MakeNodes();
         //StartCoroutine(Test ());
     }
@@ -41,7 +42,6 @@ public class BoardManager : MonoBehaviour
 
     private void MakeNodes()
     {
-        nodes = new Dictionary<Vector2, Node>();
         IList<Vector2> playerStarts;
         var boardArray = GetBoardArray(DEFAULT_BOARD_FILE, out playerStarts);
         GameManager.Instance.PlayerStarts = playerStarts;

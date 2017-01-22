@@ -29,7 +29,6 @@ public class Node : MonoBehaviour
 	private TextMesh debugText;
 	public string DebugText { get { return debugText.text; } set { debugText.text = value; } }
 
-	[SerializeField]
 	private Player Leader;
 
 	[SerializeField]
@@ -268,7 +267,8 @@ public class Node : MonoBehaviour
 		}
 		_currentHealth = _calculatedHealth;
 
-		DebugText = string.Format ("{0}{1}{2}", _currentHealth, Leader.Color.ToString()[0], ConversionStrength);
+		DebugText = string.Format ("{0:g2}", _currentHealth, Leader == null ? '-' : Leader.Color.ToString()[0], ConversionStrength);
+		debugText.color = Leader == null ? Color.black : Leader.Color;
 	}
 
 	#region Model
@@ -329,5 +329,13 @@ public class Node : MonoBehaviour
 			var otherSpriteRenderer = edge.Follow(connection.Key).gameObject.GetComponent<SpriteRenderer> ();
 			otherSpriteRenderer.color = color ? Color.red : Color.white;
 		}
+	}
+
+	public void TestInteraction(Player player, float health)
+	{
+		Leader = player;
+		_currentHealth = health;
+		DebugText = string.Format ("{0:g2}", _currentHealth, Leader == null ? '-' : Leader.Color.ToString()[0], ConversionStrength);
+		debugText.color = Leader == null ? Color.black : Leader.Color;
 	}
 }

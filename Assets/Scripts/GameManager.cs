@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour {
 		{
 			MakePlayer (start);
 		}
+		TestCase1 ();
 	}
 
 	private Player MakePlayer(Vector2 start)
@@ -56,16 +57,16 @@ public class GameManager : MonoBehaviour {
 		player.Color = COLORS[players.Count];
 		players.Add(player);
 
-//		// deal with prophets
-//		Prophet prophet = player.GetComponentInChildren<Prophet> ();
-//		prophet.Color = player.Color;
-//		if (start.x >= 0) {
-//			var node = board.GetNodeAt (start);
-//			prophet.CurrentNode = node; 
-//			player.Prophets.Add (prophet);
-//		} else {
-//			prophet.gameObject.SetActive (false);
-//		}
+		// deal with prophets
+		Prophet prophet = player.GetComponentInChildren<Prophet> ();
+		prophet.Color = player.Color;
+		if (start.x >= 0) {
+			var node = board.GetNodeAt (start);
+			prophet.CurrentNode = node; 
+			player.Prophets.Add (prophet);
+		} else {
+			prophet.gameObject.SetActive (false);
+		}
 
 		return player;
 	}
@@ -76,9 +77,8 @@ public class GameManager : MonoBehaviour {
 			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 			if (hit.transform) {
 				Node node = hit.transform.GetComponent<Node> ();
-				players [currentPlayer + 1].Prophets [0].MoveProphet (node);
-				currentPlayer = (currentPlayer + 1) % (players.Count - 1);
-				node.DebugText = "!!!";
+				if (players [currentPlayer + 1].Prophets [0].MoveProphet (node));
+					currentPlayer = (currentPlayer + 1) % (players.Count - 1);
 			}
 		}
 	}
@@ -103,5 +103,13 @@ public class GameManager : MonoBehaviour {
 	public void NodeChangingInfluence(Node node) {
 		// Check the Nodes current health - if 0 set it into the neutralList
 		// If current health > 0, move from the neutralList into the Node.Player.Nodes list.
+	}
+
+	public void TestCase1()
+	{
+		board.GetNodeAt (new Vector2(0, 0)).TestInteraction(players[1], 10);
+		board.GetNodeAt (new Vector2(0, 9)).TestInteraction(players[2], 10);
+		board.GetNodeAt (new Vector2(9, 0)).TestInteraction(players[3], 10);
+		board.GetNodeAt (new Vector2(9, 9)).TestInteraction(players[4], 10);
 	}
 }
