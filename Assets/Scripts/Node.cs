@@ -267,6 +267,8 @@ public class Node : MonoBehaviour
 			_calculatedHealth = 0;
 		}
 		_currentHealth = _calculatedHealth;
+
+		DebugText = string.Format ("{0}{1}{2}", _currentHealth, Leader.Color.ToString()[0], ConversionStrength);
 	}
 
 	#region Model
