@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour {
 	public Color[] playerColors;
 	public Sprite[] prophetSprites;
 	public Sprite[] ownerTiles;
+	public string[] playerNames;
 
 	private BoardManager board;
 	private Image buttonOverlay;
@@ -65,15 +66,16 @@ public class GameManager : MonoBehaviour {
 		var player = playerObject.GetComponent<Player>();
 		player.Color = playerColors[players.Count];
 		player.TileSprite = ownerTiles[players.Count];
+		player.Name = playerNames[players.Count];
 
         // deal with prophets
         Prophet prophet = player.GetComponentInChildren<Prophet>();
 		prophet.GetComponentInChildren<SpriteRenderer> ().sprite = prophetSprites [players.Count];
-        prophet.Color = player.Color;
         prophet.Leader = player;
         prophet.CurrentHealth = prophet.TopHealth;
         if (start.x >= 0)
-        {
+		{
+			player.ScoreDisplay = GameObject.Find (player.Name + "Score").GetComponent<Text>();
             var node = board.GetNodeAt(start);
             prophet.CurrentNode = node;
             prophet.transform.position = node.transform.position;
@@ -119,7 +121,6 @@ public class GameManager : MonoBehaviour {
             {
                 prophet.Evangelize();
             }
-            Debug.Log(player.Score);
         }
         foreach (var nodePair in board.nodes)
         {

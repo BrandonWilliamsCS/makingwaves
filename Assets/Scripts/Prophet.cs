@@ -26,19 +26,6 @@ public class Prophet : Node
 	}
 
 	private SpriteRenderer _spriteRenderer2;
-	protected override SpriteRenderer MySpriteRenderer
-	{
-		get
-		{
-			if (_spriteRenderer2 == null)
-			{
-				_spriteRenderer2 = this.GetComponentInChildren<SpriteRenderer>();
-			}
-			return _spriteRenderer2;
-		}
-	}
-
-	public Color Color { get { return MySpriteRenderer.color; } set { MySpriteRenderer.color = value; } }
 
 
     public bool CanMoveToNode(Node node)

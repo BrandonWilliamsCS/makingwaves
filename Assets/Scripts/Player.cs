@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
@@ -30,8 +31,6 @@ public class Player : MonoBehaviour {
 		}
 		set {
 			prophets = value;
-			foreach (var prophet in prophets)
-				prophet.Color = color;
 		}
 	}
 
@@ -40,13 +39,21 @@ public class Player : MonoBehaviour {
 		get { return color; }
 		set {
 			color = value;
-			foreach (var prophet in prophets)
-				prophet.Color = value;
 		}
 	}
 
 	public Sprite TileSprite { get; set; }
 
+	public string Name {get;set;}
+	public Text ScoreDisplay {get;set;}
+
     private float score;
-    public float Score { get { return score; } set { score = value; } }
+    public float Score {
+		get { return score; }
+		set {
+			score = value;
+			if (ScoreDisplay != null)
+				ScoreDisplay.text = "Score: " + value;
+		}
+	}
 }
