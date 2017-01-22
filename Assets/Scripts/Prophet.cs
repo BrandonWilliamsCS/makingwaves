@@ -7,9 +7,13 @@ public class Prophet : Node {
 	private Node currentNode;
 	public Node CurrentNode { 
 		get { return currentNode; }
-		set { 
+		set {
+            if (currentNode != null)
+            {
+                currentNode.prophets.Remove(this);
+            }
 			currentNode = value;
-			transform.position = value.transform.position;
+            currentNode.prophets.Add(this);
 		}
 	}
 
@@ -31,7 +35,7 @@ public class Prophet : Node {
         if (CanMoveToNode(newNode))
         {
             StartCoroutine(DoMoveProphet(newNode.transform.position));
-			currentNode = newNode;
+			CurrentNode = newNode;
 			return true;
         }
 		return false;

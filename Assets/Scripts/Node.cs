@@ -29,9 +29,17 @@ public class Node : MonoBehaviour
 	private TextMesh debugText;
 	public string DebugText { get { return debugText.text; } set { debugText.text = value; } }
 
-	private Player Leader;
+	private Player _leader;
+    public Player Leader
+    {
+        get { return _leader; }
+        set
+        {
+            _leader = value;
+        }
+    }
 
-	[SerializeField]
+    [SerializeField]
 	private float _topHealth = 10f;
 	public float TopHealth
 	{
@@ -83,6 +91,10 @@ public class Node : MonoBehaviour
 		{
 			return _currentHealth;
 		}
+        set
+        {
+            _currentHealth = value;
+        }
 	}
 	private float _calculatedHealth = 0f;
 
@@ -129,7 +141,7 @@ public class Node : MonoBehaviour
 
 	void Start()
 	{
-		//Evangelize ();
+
 	}
 
 	// Update is called once per frame
@@ -137,6 +149,8 @@ public class Node : MonoBehaviour
 	{
 
 	}
+
+    public IList<Prophet> prophets = new List<Prophet>();
 
     private IList<Node> neighbors = new List<Node>();
 
@@ -181,29 +195,42 @@ public class Node : MonoBehaviour
 			InfluenceEmitter.Play();
 		}
 
-		//Calculate neighbor evangelism and control
-		_calculatedHealth = CurrentHealth;
+        //Calculate neighbor evangelism and control
+        IList<Node> influencers = new List<Node>();
+        foreach (var prophet in this.prophets)
+        {
+            influencers.Add(prophet);
+        }
+        foreach (var neighbor in neighbors)
+        {
+            influencers.Add(neighbor);
+            foreach (var prophet in neighbor.prophets)
+            {
+                influencers.Add(prophet);
+            }
+        }
+        _calculatedHealth = CurrentHealth;
 		float neutralConversionRateMultiplier = .1f;
 		if (_calculatedHealth > 0f)
 		{
-			foreach (var neighbor in neighbors)
+			foreach (var influencer in influencers)
 			{
-				if (neighbor.CanEvangelize)
+				if (influencer.CanEvangelize)
 				{
-					if (Leader == neighbor.Leader)
+					if (_leader == influencer._leader)
 					{
-						_calculatedHealth += neighbor.Leader.ConversionRateMultiplier * neighbor.ConversionStrength;
+						_calculatedHealth += influencer._leader.ConversionRateMultiplier * influencer.ConversionStrength;
 					}
 					else
 					{
-						_calculatedHealth -= neighbor.Leader.ConversionRateMultiplier * neighbor.ConversionStrength;
+						_calculatedHealth -= influencer._leader.ConversionRateMultiplier * influencer.ConversionStrength;
 					}
 				}
 				else
 				{
-					if (!neighbor.IsOwned)
+					if (!influencer.IsOwned)
 					{
-						_calculatedHealth -= neutralConversionRateMultiplier * neighbor.ConversionStrength;
+						_calculatedHealth -= neutralConversionRateMultiplier * influencer.ConversionStrength;
 					}
 				}
 			}
@@ -212,24 +239,24 @@ public class Node : MonoBehaviour
 		{
 			IDictionary<Player, float> influenceScore = new Dictionary<Player, float>();
 			float neutralInfluence = 0;
-			foreach (var neighbor in neighbors)
+			foreach (var influencer in influencers)
 			{
-				if (neighbor.CanEvangelize)
+				if (influencer.CanEvangelize)
 				{
-					if (influenceScore.ContainsKey(neighbor.Leader))
+					if (influenceScore.ContainsKey(influencer._leader))
 					{
-						influenceScore[neighbor.Leader] += neighbor.Leader.ConversionRateMultiplier * neighbor.ConversionStrength;
+						influenceScore[influencer._leader] += influencer._leader.ConversionRateMultiplier * influencer.ConversionStrength;
 					}
 					else
 					{
-						influenceScore[neighbor.Leader] = neighbor.Leader.ConversionRateMultiplier * neighbor.ConversionStrength;
+						influenceScore[influencer._leader] = influencer._leader.ConversionRateMultiplier * influencer.ConversionStrength;
 					}
 				}
 				else
 				{
-					if (!neighbor.IsOwned)
+					if (!influencer.IsOwned)
 					{
-						neutralInfluence += neutralConversionRateMultiplier * neighbor.ConversionStrength;
+						neutralInfluence += neutralConversionRateMultiplier * influencer.ConversionStrength;
 					}
 				}
 			}
@@ -253,7 +280,7 @@ public class Node : MonoBehaviour
 			if (_calculatedHealth > 0)
 			{
 				//Leader.nodes.remove(this);
-				Leader = effectiveLeader;
+				_leader = effectiveLeader;
 				//Leader.nodes.add(this);
 			}
 		}
@@ -276,7 +303,7 @@ public class Node : MonoBehaviour
 		_currentHealth = _calculatedHealth;
 
 		DebugText = string.Format ("{0:g2}", _currentHealth);
-		debugText.color = Leader == null ? Color.black : Leader.Color;
+        debugText.color = _leader == null ? Color.black : _leader.Color;
 	}
 
 	#region Model
@@ -346,9 +373,9 @@ public class Node : MonoBehaviour
 
 	public void TestInteraction(Player player, float health)
 	{
-		Leader = player;
+		_leader = player;
 		_currentHealth = health;
-		DebugText = string.Format ("{0:g2}", _currentHealth, Leader == null ? '-' : Leader.Color.ToString()[0], ConversionStrength);
-		debugText.color = Leader == null ? Color.black : Leader.Color;
+		DebugText = string.Format ("{0:g2}", _currentHealth, _leader == null ? '-' : _leader.Color.ToString()[0], ConversionStrength);
+		debugText.color = _leader == null ? Color.black : _leader.Color;
 	}
 }
