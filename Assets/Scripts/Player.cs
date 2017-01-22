@@ -46,4 +46,7 @@ public class Player : MonoBehaviour {
 	}
 
 	public Sprite TileSprite { get; set; }
+
+    private float score;
+    public float Score { get { return score; } set { score = value; } }
 }
