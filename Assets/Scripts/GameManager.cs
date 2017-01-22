@@ -106,11 +106,24 @@ public class GameManager : MonoBehaviour {
         {
             nodePair.Value.Evangelize();
         }
+        foreach (var player in players)
+        {
+            foreach (var prophet in player.Prophets)
+            {
+                prophet.Evangelize();
+            }
+        }
         foreach (var nodePair in board.nodes)
         {
             nodePair.Value.UpdateHealth();
 		}
-
+        foreach (var player in players)
+        {
+            foreach (var prophet in player.Prophets)
+            {
+                prophet.UpdateHealth();
+            }
+        }
     }
 
 	private void SetButtonColor(Color color)
