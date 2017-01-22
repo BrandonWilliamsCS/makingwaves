@@ -275,7 +275,7 @@ public class Node : MonoBehaviour
 		}
 		_currentHealth = _calculatedHealth;
 
-		DebugText = string.Format ("{0}{1}{2}", _currentHealth, Leader.Color.ToString()[0], ConversionStrength);
+		DebugText = string.Format ("{0:g2}", _currentHealth);
 		debugText.color = Leader == null ? Color.black : Leader.Color;
 	}
 
