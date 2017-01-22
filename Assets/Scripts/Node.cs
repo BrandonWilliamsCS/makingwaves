@@ -104,10 +104,11 @@ public class Node : MonoBehaviour
         set
         {
 			_currentHealth = value;
-			if (IsFloor) {
+			if (IsFloor && IsOwned) {
 				var partOwned = Mathf.Min(_currentHealth / _ownershipThreshold, 1);
-				neutralSpriteRenderer.color = neutralSpriteRenderer.color.WithAlpha(1 - partOwned);
-				MySpriteRenderer.color = MySpriteRenderer.color.WithAlpha(partOwned);
+				MySpriteRenderer.sprite = Leader.TileSprite;
+				//neutralSpriteRenderer.color = neutralSpriteRenderer.color.WithAlpha(1 - partOwned);
+				//MySpriteRenderer.color = MySpriteRenderer.color.WithAlpha(partOwned);
 			}
         }
 	}
@@ -143,7 +144,7 @@ public class Node : MonoBehaviour
 		{
 			if (_spriteRenderer == null)
 			{
-				_spriteRenderer = transform.Find("OwnedTile").GetComponent<SpriteRenderer>();
+				_spriteRenderer = this.GetComponent<SpriteRenderer>();
 			}
 			return _spriteRenderer;
 		}
@@ -154,7 +155,7 @@ public class Node : MonoBehaviour
 	protected virtual void Awake()
 	{
 		debugText = GetComponentInChildren <TextMesh>();
-		neutralSpriteRenderer = transform.Find("OwnedTile").GetComponent<SpriteRenderer>();
+		//neutralSpriteRenderer = transform.Find("NeutralTile").GetComponent<SpriteRenderer>();
 	}
 
     public IList<Prophet> prophets = new List<Prophet>();
