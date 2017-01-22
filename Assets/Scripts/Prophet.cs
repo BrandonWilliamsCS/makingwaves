@@ -26,10 +26,12 @@ public class Prophet : Node {
 	}
 
 	public bool MoveProphet(Node newNode) {
+
         // Move the prophet to the new node location
         if (CanMoveToNode(newNode))
         {
             StartCoroutine(DoMoveProphet(newNode.transform.position));
+			currentNode = newNode;
 			return true;
         }
 		return false;

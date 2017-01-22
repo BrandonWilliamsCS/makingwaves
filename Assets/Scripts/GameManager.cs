@@ -46,12 +46,11 @@ public class GameManager : MonoBehaviour {
 		{
 			MakePlayer (start);
 		}
-		TestCase1 ();
+		TestCase1 (); //!!
 	}
 
 	private Player MakePlayer(Vector2 start)
 	{
-		Debug.Log (start);
 		var playerObject = Instantiate(playerPrefab);
 		var player = playerObject.GetComponent<Player>();
 		player.Color = COLORS[players.Count];
@@ -80,7 +79,8 @@ public class GameManager : MonoBehaviour {
 			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 			if (hit.transform) {
 				Node node = hit.transform.GetComponent<Node> ();
-				if (players [currentPlayer + 1].Prophets [0].MoveProphet (node));
+				var canMove = players [currentPlayer + 1].Prophets [0].MoveProphet (node);
+				if (canMove)
 					currentPlayer = (currentPlayer + 1) % (players.Count - 1);
 			}
 		}

@@ -14,7 +14,7 @@ public class BoardManager : MonoBehaviour
 	{
 		nodes = new Dictionary<Vector2, Node>();
         MakeNodes();
-        StartCoroutine(Test ());
+        // StartCoroutine(Test ()); //!!
     }
 
     public Node GetNodeAt(Vector2 gridPosition)
