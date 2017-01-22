@@ -83,12 +83,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4acc6bb7fea1f45d08284e5842db0e4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Owner: {fileID: 0}
   _topHealth: 10
-  _healthThreshold: 7
+  _evangelismThreshold: 7
+  _ownershipThreshold: 3
   _currentHealth: 0
-  _influenceWeight: 1
-  currentNodePlacement: {fileID: 0}
+  _conversionStrength: 1
 --- !u!198 &198596820914718636
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -2820,6 +2819,6 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 00dc1efd759884730a1a56594e735ced, type: 3}
-  m_Color: {r: 0.5294118, g: 0.15570934, b: 0.15570934, a: 1}
+  m_Color: {r: 0.5294118, g: 0.15570934, b: 0.15570934, a: 0.128}
   m_FlipX: 0
   m_FlipY: 0
