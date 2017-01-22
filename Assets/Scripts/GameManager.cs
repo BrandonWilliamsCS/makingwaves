@@ -45,9 +45,12 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	List<Player> players = new List<Player>();
 
+	private GameObject vp;
 	void Awake () {
 		board = GameObject.FindObjectOfType<BoardManager> ();
 		buttonOverlay = GameObject.Find ("ReadyTint").GetComponent<Image>();
+		vp = GameObject.Find ("VictoryPanel");
+			vp.SetActive(false);
 	}
 
 	void Start () {
@@ -91,7 +94,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Update () {
-		if (Input.GetMouseButtonUp (0)) {
+		if (!end && Input.GetMouseButtonUp (0)) {
 			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 			if (hit.transform) {
 				Node node = hit.transform.GetComponent<Node> ();
@@ -147,6 +150,14 @@ public class GameManager : MonoBehaviour {
 	public void NodeChangingInfluence(Node node) {
 		// Check the Nodes current health - if 0 set it into the neutralList
 		// If current health > 0, move from the neutralList into the Node.Player.Nodes list.
+	}
+
+	private bool end;
+	public void Winner(Player player)
+	{
+		vp.SetActive(true);
+		GameObject.Find ("WinText").GetComponent<Text>().text = player.Name + " Wins!";
+		end = true;
 	}
 
 	public void GivePlayersHomes()

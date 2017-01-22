@@ -54,6 +54,9 @@ public class Player : MonoBehaviour {
 			score = value;
 			if (ScoreDisplay != null)
 				ScoreDisplay.text = "Score: " + value;
+			if (score > 100) {
+				GameManager.Instance.Winner (this);
+			}
 		}
 	}
 }
