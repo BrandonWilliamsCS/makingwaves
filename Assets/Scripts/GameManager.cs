@@ -119,6 +119,7 @@ public class GameManager : MonoBehaviour {
             {
                 prophet.Evangelize();
             }
+            Debug.Log(player.Score);
         }
         foreach (var nodePair in board.nodes)
         {

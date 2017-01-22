@@ -45,6 +45,9 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+    private float score;
+    public float Score { get { return score; } set { score = value; } }
+
 	// Use this for initialization
 	void Start () {
 		

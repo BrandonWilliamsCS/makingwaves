@@ -211,6 +211,7 @@ public class Node : MonoBehaviour
         if (_currentHealth > _evangelismThreshold)
         {
             Emit();
+            Leader.Score += Leader.ConversionRateMultiplier * ConversionStrength;
         }
 
         //Calculate neighbor evangelism and control
