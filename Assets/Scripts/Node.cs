@@ -81,7 +81,7 @@ public class Node : MonoBehaviour {
 	}
 
 	private SpriteRenderer _spriteRenderer;
-	private SpriteRenderer MySpriteRenderer {
+	protected SpriteRenderer MySpriteRenderer {
 		get {
 			if (_spriteRenderer == null) {
 				_spriteRenderer = this.GetComponent<SpriteRenderer> ();
@@ -135,8 +135,7 @@ public class Node : MonoBehaviour {
 	#region Model
 	public Vector2 GridPosition { get; set;	}
 
-	//!! TODO make private
-	public IDictionary<Vector2, Edge> edges = new Dictionary<Vector2, Edge>();
+	private IDictionary<Vector2, Edge> edges = new Dictionary<Vector2, Edge>();
 
 	public override bool Equals (object obj)
 	{
@@ -154,7 +153,7 @@ public class Node : MonoBehaviour {
 		return GridPosition.GetHashCode();
 	}
 
-	public class Edge
+	private class Edge
 	{
 		public Node Left { get; set; }
 		public Node Right { get; set; }
@@ -177,4 +176,16 @@ public class Node : MonoBehaviour {
 		}
 	}
 	#endregion
+
+
+	public void TestNode(bool color)
+	{
+		var nodeSpriteRenderer = GetComponent<SpriteRenderer> ();
+		nodeSpriteRenderer.color = color ? Color.blue : Color.white;
+		foreach (var connection in edges) {
+			var edge = connection.Value;
+			var otherSpriteRenderer = edge.Follow(connection.Key).gameObject.GetComponent<SpriteRenderer> ();
+			otherSpriteRenderer.color = color ? Color.red : Color.white;
+		}
+	}
 }
