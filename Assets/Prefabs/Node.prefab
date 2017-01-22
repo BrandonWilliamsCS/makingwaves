@@ -70,7 +70,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1921689857056906}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.111, y: -0.172, z: -1}
+  m_LocalPosition: {x: -0.4, y: 0.1, z: -1}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 4441124941482566}
@@ -164,7 +164,7 @@ TextMesh:
   m_GameObject: {fileID: 1921689857056906}
   m_Text: 0X1
   m_OffsetZ: 0
-  m_CharacterSize: 1
+  m_CharacterSize: 3
   m_LineSpacing: 1
   m_Anchor: 0
   m_Alignment: 0
