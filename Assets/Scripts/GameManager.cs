@@ -17,32 +17,66 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+	public static readonly Color[] COLORS = new Color[] {
+		Color.gray,
+		Color.red,
+		Color.green,
+		Color.blue,
+		Color.yellow,
+	};
+
 	[SerializeField]
-	private GameObject nodePrefab;
+	private GameObject playerPrefab;
+	private BoardManager board;
+	public IList<Vector2> PlayerStarts { get; set; }
+	private int currentPlayer;
 
 	/// <summary>
 	/// All the players in the game
 	/// </summary>
 	List<Player> players = new List<Player>();
 
-	// Use this for initialization
+	void Awake () {
+		board = GameObject.FindObjectOfType<BoardManager> ();
+	}
+
 	void Start () {
-		// Call the NodeGenerator to generate all the node game objects into the scene
+		MakePlayer (Vector2.left);
+		foreach (var start in PlayerStarts)
+		{
+			MakePlayer (start);
+		}
+	}
 
-		Player player1 = new GameObject ("Player").AddComponent<Player> ();
-		players.Add (player1);
+	private Player MakePlayer(Vector2 start)
+	{
+		Debug.Log (start);
+		var playerObject = Instantiate(playerPrefab);
+		var player = playerObject.GetComponent<Player>();
+		player.Color = COLORS[players.Count];
+		players.Add(player);
 
-		Prophet prophet = FindObjectOfType<Prophet> ();
-		player1.Prophets.Add (prophet);
+		// deal with prophets
+		Prophet prophet = player.GetComponentInChildren<Prophet> ();
+		prophet.Color = player.Color;
+		if (start.x >= 0) {
+			var node = board.GetNodeAt (start);
+			prophet.CurrentNode = node; 
+			player.Prophets.Add (prophet);
+		} else {
+			prophet.gameObject.SetActive (false);
+		}
+		return player;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetMouseButtonUp (0)) {
 			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-			Node node = hit.transform.GetComponent<Node> ();
-			if (node != null) {
-				players [0].Prophets [0].MoveProphet (node);
+			if (hit.transform) {
+				Node node = hit.transform.GetComponent<Node> ();
+				players [currentPlayer + 1].Prophets [0].MoveProphet (node);
+				currentPlayer = (currentPlayer + 1) % (players.Count - 1);
 			}
 		}
 	}

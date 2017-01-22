@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class Prophet : Node {
 
-	[SerializeField]
-	private Node currentNodePlacement;
+	private Node currentNode;
+	public Node CurrentNode { 
+		get { return currentNode; }
+		set { 
+			currentNode = value;
+			transform.position = value.transform.position;
+		}
+	}
+
+	public Color Color { get { return MySpriteRenderer.color; } set { MySpriteRenderer.color = value; } }
 
 	// Update is called once per frame
 	void Update () {

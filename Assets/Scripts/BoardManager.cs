@@ -10,15 +10,15 @@ public class BoardManager : MonoBehaviour
 	public GameObject nodePrefab;
 
 	// Use this for initialization
-	void Start ()
+	void Awake ()
 	{
 		MakeNodes();
+		//StartCoroutine(Test ());
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+	public Node GetNodeAt(Vector2 gridPosition)
 	{
-		
+		return nodes [gridPosition];
 	}
 
 	private IEnumerator Test()
@@ -26,20 +26,9 @@ public class BoardManager : MonoBehaviour
 		foreach (var nodePair in nodes)
 		{
 			var node = nodePair.Value;
-			var nodeSpriteRenderer = node.gameObject.GetComponent<SpriteRenderer> ();
-			nodeSpriteRenderer.color = Color.blue;
-			foreach (var connection in node.edges) {
-				var edge = connection.Value;
-				var otherSpriteRenderer = edge.Follow(connection.Key).gameObject.GetComponent<SpriteRenderer> ();
-				otherSpriteRenderer.color = Color.red;
-			}
+			node.TestNode (true);
 			yield return new WaitForSeconds (0.5f);
-			nodeSpriteRenderer.color = Color.white;
-			foreach (var connection in node.edges) {
-				var otherNode = connection.Value;
-				var otherSpriteRenderer = otherNode.Follow(connection.Key).gameObject.GetComponent<SpriteRenderer> ();
-				otherSpriteRenderer.color = Color.white;
-			}
+			node.TestNode (false);
 		}
 	}
 
@@ -52,7 +41,9 @@ public class BoardManager : MonoBehaviour
 
 	private void MakeNodes ()
 	{
-		var boardArray = GetBoardArray(DEFAULT_BOARD_FILE);
+		IList<Vector2> playerStarts;
+		var boardArray = GetBoardArray(DEFAULT_BOARD_FILE, out playerStarts);
+		GameManager.Instance.PlayerStarts = playerStarts;
 
 		// create nodes from array
 		const float halfRoot3 = 0.8660254038f;
@@ -63,8 +54,9 @@ public class BoardManager : MonoBehaviour
 			for (var j = 0; j < columns; j++)
 			{
 				if (!boardArray[i][j]) continue;
-				var gridX = j;
-				var gridY = rows - 1 - i;
+				var gridPosition = BoardArrayToGridPosition(i, j, rows);
+				var gridX = gridPosition.x;
+				var gridY = gridPosition.y;
 
 				// create the node at the proper place in the world
 				var worldPosition = new Vector2(halfRoot3 * (0.5f * (gridY % 2) + gridX), 0.75f * gridY);
@@ -72,7 +64,6 @@ public class BoardManager : MonoBehaviour
 
 				// track the node and keep its grid position
 				var nodeScript = node.GetComponent<Node>();
-				var gridPosition = new Vector2 (gridX, gridY);
 				nodeScript.GridPosition = gridPosition;
 				nodes[gridPosition] = nodeScript;
 			}
@@ -90,14 +81,14 @@ public class BoardManager : MonoBehaviour
 		}
 	}
 
-	private bool[][] GetBoardArray(string fileName)
+	private bool[][] GetBoardArray(string fileName, out IList<Vector2> playerStarts)
 	{
+		var playerStartsByLetter = new Dictionary<char, Vector2> ();
 		// read file into string
 		var file = Resources.Load<TextAsset>(fileName);
 		var boardString = file.text;
 
 		// convert string to array
-		// TODO: include players somehow
 		var lines = boardString.Split(new char[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
 		var rows = lines.Length;
 		var columns = lines[0].Length;
@@ -107,10 +98,27 @@ public class BoardManager : MonoBehaviour
 			boardArray[i] = new bool[columns];
 			for (var j = 0; j < columns; j++)
 			{
+				// track final grid positions of 
+				if (char.IsLetter (lines [i] [j])) {
+					playerStartsByLetter [lines [i] [j]] = BoardArrayToGridPosition (i, j, rows);
+				}
 				boardArray[i][j] = lines[i][j] != '0';
 			}
 		}
 
+		var playerStartLetters = new List<char>(playerStartsByLetter.Keys);
+		playerStartLetters.Sort();
+		playerStarts = new List<Vector2>(playerStartLetters.Count);
+		foreach (var playerStartLetter in playerStartLetters) {
+			playerStarts.Add (playerStartsByLetter [playerStartLetter]);
+		}
 		return boardArray;
+	}
+
+	private Vector2 BoardArrayToGridPosition(int currentRow, int currentColumn, int totalRows)
+	{
+		var gridX = currentColumn;
+		var gridY = totalRows - 1 - currentRow;
+		return new Vector2 (gridX, gridY);
 	}
 }

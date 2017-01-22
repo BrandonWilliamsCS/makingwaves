@@ -30,6 +30,18 @@ public class Player : MonoBehaviour {
 		}
 		set {
 			prophets = value;
+			foreach (var prophet in prophets)
+				prophet.Color = color;
+		}
+	}
+
+	private Color color;
+	public Color Color { 
+		get { return color; }
+		set {
+			color = value;
+			foreach (var prophet in prophets)
+				prophet.Color = value;
 		}
 	}
 
