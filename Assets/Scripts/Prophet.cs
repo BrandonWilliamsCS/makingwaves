@@ -22,13 +22,15 @@ public class Prophet : Node {
 
 	public bool CanMoveToNode(Node node) {
 		// Validate this prophet can move the distance to the given node
-		return false;
+		return currentNode.IsNeighbor(node);
 	}
 
 	public void MoveProphet(Node newNode) {
-		// Move the prophet to the new node location
-		StartCoroutine(DoMoveProphet(newNode.transform.position));
-
+        // Move the prophet to the new node location
+        if (CanMoveToNode(newNode))
+        {
+            StartCoroutine(DoMoveProphet(newNode.transform.position));
+        }
 	}
 
 	private IEnumerator DoMoveProphet(Vector3 newLocation) {

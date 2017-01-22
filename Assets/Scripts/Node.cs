@@ -139,7 +139,9 @@ public class Node : MonoBehaviour
 
 	}
 
-	public void ComputeNeighbors()
+    private IList<Node> neighbors = new List<Node>();
+
+    public void ComputeNeighbors()
 	{
 		var collider = GetComponent<PolygonCollider2D>();
 		foreach (var clockDirection in DIRECTIONS)
@@ -157,8 +159,16 @@ public class Node : MonoBehaviour
 			edges[clockDirection.Value] = edge;
 			var oppositeDirection = DIRECTIONS[(clockDirection.Key + 6) % 12];
 			otherNode.edges[oppositeDirection] = edge;
-		}
+
+            neighbors.Add(otherNode);
+            otherNode.neighbors.Add(this);
+        }
 	}
+
+    public bool IsNeighbor(Node node)
+    {
+        return neighbors.Contains(node);
+    }
 
 	public void Evangelize()
 	{
@@ -177,9 +187,8 @@ public class Node : MonoBehaviour
 		float neutralConversionRateMultiplier = .1f;
 		if (_calculatedHealth > 0f)
 		{
-			foreach (var edgePair in edges)
+			foreach (var neighbor in neighbors)
 			{
-				Node neighbor = edgePair.Value.Follow(edgePair.Key);
 				if (neighbor.CanEvangelize)
 				{
 					if (Leader == neighbor.Leader)
@@ -204,9 +213,8 @@ public class Node : MonoBehaviour
 		{
 			IDictionary<Player, float> influenceScore = new Dictionary<Player, float>();
 			float neutralInfluence = 0;
-			foreach (var edgePair in edges)
+			foreach (var neighbor in neighbors)
 			{
-				Node neighbor = edgePair.Value.Follow(edgePair.Key);
 				if (neighbor.CanEvangelize)
 				{
 					if (influenceScore.ContainsKey(neighbor.Leader))

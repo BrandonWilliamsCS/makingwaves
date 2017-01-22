@@ -56,18 +56,21 @@ public class GameManager : MonoBehaviour {
 		player.Color = COLORS[players.Count];
 		players.Add(player);
 
-//		// deal with prophets
-//		Prophet prophet = player.GetComponentInChildren<Prophet> ();
-//		prophet.Color = player.Color;
-//		if (start.x >= 0) {
-//			var node = board.GetNodeAt (start);
-//			prophet.CurrentNode = node; 
-//			player.Prophets.Add (prophet);
-//		} else {
-//			prophet.gameObject.SetActive (false);
-//		}
+        // deal with prophets
+        Prophet prophet = player.GetComponentInChildren<Prophet>();
+        prophet.Color = player.Color;
+        if (start.x >= 0)
+        {
+            var node = board.GetNodeAt(start);
+            prophet.CurrentNode = node;
+            player.Prophets.Add(prophet);
+        }
+        else
+        {
+            prophet.gameObject.SetActive(false);
+        }
 
-		return player;
+        return player;
 	}
 	
 	// Update is called once per frame
