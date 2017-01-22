@@ -256,7 +256,7 @@ public class Node : MonoBehaviour
 
 	public bool CanEvangelize { get { return CurrentHealth >= EvangelismThreshold; } }
 
-	public void updateHealth()
+	public void UpdateHealth()
 	{
 		if (_calculatedHealth > TopHealth)
 		{

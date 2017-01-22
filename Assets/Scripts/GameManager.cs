@@ -85,7 +85,16 @@ public class GameManager : MonoBehaviour {
 
 	public void OnReadyPressed()
 	{
-	}
+        foreach (var nodePair in board.nodes)
+        {
+            nodePair.Value.Evangelize();
+        }
+        foreach (var nodePair in board.nodes)
+        {
+            nodePair.Value.UpdateHealth();
+        }
+
+    }
 
 	void OnDestroy() {
 		instance = null;
