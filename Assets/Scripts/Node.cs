@@ -27,7 +27,7 @@ public class Node : MonoBehaviour
     #endregion
 
     private TextMesh debugText;
-    public virtual string DebugText { get { return debugText.text; } set { debugText.text = value; } }
+	public virtual string DebugText { get { return debugText != null ? debugText.text : ""; } set { if (debugText != null) debugText.text = value; } }
 
     private Player _leader;
     public Player Leader

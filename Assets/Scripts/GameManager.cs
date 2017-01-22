@@ -118,24 +118,24 @@ public class GameManager : MonoBehaviour {
         {
             nodePair.Value.Evangelize();
         }
-        foreach (var player in players)
-        {
-            foreach (var prophet in player.Prophets)
-            {
-                prophet.Evangelize();
-            }
-        }
+//        foreach (var player in players)
+//        {
+//            foreach (var prophet in player.Prophets)
+//            {
+//                prophet.Evangelize();
+//            }
+//        }
         foreach (var nodePair in board.nodes)
         {
             nodePair.Value.UpdateHealth();
 		}
-        foreach (var player in players)
-        {
-            foreach (var prophet in player.Prophets)
-            {
-                prophet.UpdateHealth();
-            }
-        }
+//        foreach (var player in players)
+//        {
+//            foreach (var prophet in player.Prophets)
+//            {
+//                prophet.UpdateHealth();
+//            }
+//        }
     }
 
 	private void SetButtonColor(Color color)
@@ -166,16 +166,16 @@ public class GameManager : MonoBehaviour {
 		node.TestInteraction(players[1], 10);
 		node.CurrentHealth = node.CurrentHealth;
 
-		board.GetNodeAt (new Vector2(9, 9)).TestInteraction(players[2], 10);
-		node.TestInteraction(players[1], 10);
+		node = board.GetNodeAt (new Vector2(9, 9));
+		node.TestInteraction(players[2], 10);
 		node.CurrentHealth = node.CurrentHealth;
 
-		board.GetNodeAt (new Vector2(0, 9)).TestInteraction(players[3], 10);
-		node.TestInteraction(players[1], 10);
+		node = board.GetNodeAt (new Vector2(0, 9));
+		node.TestInteraction(players[3], 10);
 		node.CurrentHealth = node.CurrentHealth;
 
-		board.GetNodeAt (new Vector2(9, 0)).TestInteraction(players[4], 10);
-		node.TestInteraction(players[1], 10);
+		node = board.GetNodeAt (new Vector2(9, 0));
+		node.TestInteraction(players[4], 10);
 		node.CurrentHealth = node.CurrentHealth;
 	}
 }
