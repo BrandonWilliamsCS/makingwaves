@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour {
 		Color.red,
 		Color.green,
 		Color.blue,
-		Color.yellow,
+		Color.magenta,
 	};
 
 	[SerializeField]
@@ -57,18 +57,21 @@ public class GameManager : MonoBehaviour {
 		player.Color = COLORS[players.Count];
 		players.Add(player);
 
-		// deal with prophets
-		Prophet prophet = player.GetComponentInChildren<Prophet> ();
-		prophet.Color = player.Color;
-		if (start.x >= 0) {
-			var node = board.GetNodeAt (start);
-			prophet.CurrentNode = node; 
-			player.Prophets.Add (prophet);
-		} else {
-			prophet.gameObject.SetActive (false);
-		}
+        // deal with prophets
+        Prophet prophet = player.GetComponentInChildren<Prophet>();
+        prophet.Color = player.Color;
+        if (start.x >= 0)
+        {
+            var node = board.GetNodeAt(start);
+            prophet.CurrentNode = node;
+            player.Prophets.Add(prophet);
+        }
+        else
+        {
+            prophet.gameObject.SetActive(false);
+        }
 
-		return player;
+        return player;
 	}
 	
 	// Update is called once per frame
@@ -108,8 +111,8 @@ public class GameManager : MonoBehaviour {
 	public void TestCase1()
 	{
 		board.GetNodeAt (new Vector2(0, 0)).TestInteraction(players[1], 10);
-		board.GetNodeAt (new Vector2(0, 9)).TestInteraction(players[2], 10);
-		board.GetNodeAt (new Vector2(9, 0)).TestInteraction(players[3], 10);
-		board.GetNodeAt (new Vector2(9, 9)).TestInteraction(players[4], 10);
+		board.GetNodeAt (new Vector2(9, 9)).TestInteraction(players[2], 10);
+		board.GetNodeAt (new Vector2(0, 9)).TestInteraction(players[3], 10);
+		board.GetNodeAt (new Vector2(9, 0)).TestInteraction(players[4], 10);
 	}
 }

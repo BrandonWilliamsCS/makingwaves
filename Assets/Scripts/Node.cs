@@ -324,9 +324,13 @@ public class Node : MonoBehaviour
 	{
 		var nodeSpriteRenderer = GetComponent<SpriteRenderer> ();
 		nodeSpriteRenderer.color = color ? Color.blue : Color.white;
-		foreach (var connection in edges) {
-			var edge = connection.Value;
-			var otherSpriteRenderer = edge.Follow(connection.Key).gameObject.GetComponent<SpriteRenderer> ();
+//		foreach (var connection in edges) {
+//			var edge = connection.Value;
+//			var otherSpriteRenderer = edge.Follow(connection.Key).gameObject.GetComponent<SpriteRenderer> ();
+//			otherSpriteRenderer.color = color ? Color.red : Color.white;
+//		}
+		foreach (var n in neighbors) {
+			var otherSpriteRenderer = n.gameObject.GetComponent<SpriteRenderer> ();
 			otherSpriteRenderer.color = color ? Color.red : Color.white;
 		}
 	}
