@@ -103,8 +103,10 @@ public class Node : MonoBehaviour
         }
         set
         {
-            _currentHealth = value;
+			_currentHealth = value;
+			Debug.Log ("CHANGING HEALTH: " + IsOwned + IsFloor);
 			if (IsOwned && IsFloor) {
+				Debug.Log ("CHANGING TILES");
 				MySpriteRenderer.sprite = Leader.TileSprite;
 			}
         }
@@ -311,7 +313,7 @@ public class Node : MonoBehaviour
         {
             _calculatedHealth = 0;
         }
-        _currentHealth = _calculatedHealth;
+        CurrentHealth = _calculatedHealth;
 
 		DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
         debugText.color = _leader == null ? Color.black : _leader.Color;

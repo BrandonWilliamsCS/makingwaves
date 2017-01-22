@@ -150,10 +150,21 @@ public class GameManager : MonoBehaviour {
 
 	public void GivePlayersHomes()
 	{
-		board.GetNodeAt (new Vector2(0, 0)).TestInteraction(players[1], 10);
+		var node = board.GetNodeAt (new Vector2 (0, 0));
+		node.TestInteraction(players[1], 10);
+		node.CurrentHealth = node.CurrentHealth;
+
 		board.GetNodeAt (new Vector2(9, 9)).TestInteraction(players[2], 10);
+		node.TestInteraction(players[1], 10);
+		node.CurrentHealth = node.CurrentHealth;
+
 		board.GetNodeAt (new Vector2(0, 9)).TestInteraction(players[3], 10);
+		node.TestInteraction(players[1], 10);
+		node.CurrentHealth = node.CurrentHealth;
+
 		board.GetNodeAt (new Vector2(9, 0)).TestInteraction(players[4], 10);
+		node.TestInteraction(players[1], 10);
+		node.CurrentHealth = node.CurrentHealth;
 	}
 }
 
