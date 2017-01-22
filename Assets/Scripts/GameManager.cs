@@ -63,8 +63,8 @@ public class GameManager : MonoBehaviour {
 	{
 		var playerObject = Instantiate(playerPrefab);
 		var player = playerObject.GetComponent<Player>();
-		Debug.Log (playerColors.Length);
 		player.Color = playerColors[players.Count];
+		player.TileSprite = ownerTiles[players.Count];
 
         // deal with prophets
         Prophet prophet = player.GetComponentInChildren<Prophet>();

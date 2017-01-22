@@ -104,6 +104,9 @@ public class Node : MonoBehaviour
         set
         {
             _currentHealth = value;
+			if (IsOwned) {
+				MySpriteRenderer.sprite = Leader.TileSprite;
+			}
         }
 	}
 	private float _calculatedHealth = 0f;
@@ -144,20 +147,9 @@ public class Node : MonoBehaviour
 		}
 	}
 
-	void Awake()
+	protected virtual void Awake()
 	{
 		debugText = GetComponentInChildren <TextMesh>();
-	}
-
-	void Start()
-	{
-
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
 	}
 
     public IList<Prophet> prophets = new List<Prophet>();
