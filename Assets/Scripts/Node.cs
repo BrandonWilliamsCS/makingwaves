@@ -215,7 +215,7 @@ public class Node : MonoBehaviour
     }
 
     //!! TODO: looooong method. break into sub-functions, and ideally prep for configuration or mechanic change.
-    public virtual void Evangelize()
+    public virtual void AcceptInfluence()
     {
         if (_currentHealth > _evangelismThreshold)
         {
@@ -318,7 +318,7 @@ public class Node : MonoBehaviour
 
     public bool CanEvangelize { get { return CurrentHealth >= EvangelismThreshold; } }
 
-    public virtual void UpdateHealth()
+    public virtual void ApplyInfluence()
     {
         if (_calculatedHealth > TopHealth)
         {
@@ -404,10 +404,10 @@ public class Node : MonoBehaviour
         }
     }
 
-    public void TestInteraction(Player player, float health)
+    public void SetOwner(Player player)
     {
-        _leader = player;
-        _currentHealth = health;
+        Leader = player;
+        CurrentHealth = TopHealth;
         DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
         debugText.color = _leader == null ? Color.black : _leader.Color;
     }

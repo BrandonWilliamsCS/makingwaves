@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MakingWaves.Model;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +20,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    public Idea Idea { get; set; }
+
     //!! TODO: encapsulation; possibly readonly with special change logic
+    [SerializeField]
     private List<Prophet> prophets = new List<Prophet>();
     public List<Prophet> Prophets
     {
@@ -34,36 +38,35 @@ public class Player : MonoBehaviour
     }
 
     //!! TODO: just store full idea data
-    private Color color;
-    public Color Color
-    {
-        get { return color; }
-        set
-        {
-            color = value;
-        }
-    }
+    public Color Color { get { return Idea.color; } }
 
     //!! TODO: encapsulate
-    public Sprite TileSprite { get; set; }
+    public Sprite TileSprite { get { return Idea.ownedNodeSprite; } }
 
-    public string Name { get; set; }
+    public string Name { get { return Idea.ideaName; } }
+
     //!! TODO: encapsulate
     public Text ScoreDisplay { get; set; }
 
-    private float score;
-    public float Score
+    public float Score { get; set; }
+
+    public void InitializeProphets(Node startNode)
     {
-        get { return score; }
-        set
+        foreach (var prophet in Prophets)
         {
-            score = value;
-            //!! TODO: this does not belong anywhere near here. Move win score to game options
-            if (ScoreDisplay != null)
-                ScoreDisplay.text = "Score: " + value;
-            if (score > 10)
+            prophet.GetComponentInChildren<SpriteRenderer>().sprite = Idea.prophetSprite;
+            prophet.Leader = this;
+            prophet.CurrentHealth = prophet.TopHealth;
+
+            if (startNode != null)
             {
-                GameManager.Instance.Winner(this);
+                prophet.CurrentNode = startNode;
+                prophet.transform.position = startNode.transform.position;
+                startNode.SetOwner(this);
+            }
+            else
+            {
+                prophet.gameObject.SetActive(false);
             }
         }
     }

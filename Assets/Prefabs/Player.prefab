@@ -309,6 +309,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _conversionRateMultiplier: 1
+  prophets:
+  - {fileID: 114929437723454174}
 --- !u!114 &114929437723454174
 MonoBehaviour:
   m_ObjectHideFlags: 1

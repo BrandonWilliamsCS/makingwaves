@@ -58,15 +58,17 @@ public class Prophet : Node //!! TODO: Probably switch to a common (abstract?) b
         }
     }
 
-    public override void Evangelize()
+    public override void AcceptInfluence()
     {
+        //!! TODO: better way to disable
+        if (!gameObject.activeInHierarchy) return;
         neighbors = currentNode.neighbors;
-        base.Evangelize();
+        base.AcceptInfluence();
     }
 
-    public override void UpdateHealth()
+    public override void ApplyInfluence()
     {
-        base.UpdateHealth();
+        base.ApplyInfluence();
         if (Leader != null)
         {
             if (CurrentHealth < OwnershipThreshold)

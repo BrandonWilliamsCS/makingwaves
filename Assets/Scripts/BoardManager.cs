@@ -12,6 +12,8 @@ public class BoardManager : MonoBehaviour
     public GameObject nodePrefab;
     #endregion
 
+    public IList<Vector2> PlayerStarts { get; set; }
+
     /// <summary>
     /// All the nodes in the game. 
     /// Vector2 is the Grid Position of a specific Node for easy lookup.
@@ -38,7 +40,7 @@ public class BoardManager : MonoBehaviour
     {
         IList<Vector2> playerStarts;
         var boardArray = GetBoardArray(DEFAULT_BOARD_FILE, out playerStarts);
-        GameManager.Instance.PlayerStarts = playerStarts; // TODO: richer board format for more starting configurations
+        PlayerStarts = playerStarts; // TODO: richer board format for more starting configurations
 
         // create nodes from array
         const float halfRoot3 = 0.8660254038f; //!! TODO: factor raw math out?
