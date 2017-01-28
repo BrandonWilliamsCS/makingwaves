@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    // TODO: configurable, in editor or game settings
+    private const string DEFAULT_BOARD_FILE = "board";
+
     #region Singleton
     private static GameManager _instance;
     public static GameManager Instance
@@ -93,7 +96,7 @@ public class GameManager : MonoBehaviour
         player.Idea = ideas[players.Count];
         if (start.x >= 0)
         {
-            var node = board.GetNodeAt(start);
+            var node = board.Nodes[start];
             player.InitializeProphets(node);
             // TODO: UI
             player.ScoreDisplay = GameObject.Find(player.Name + "Score").GetComponent<Text>();

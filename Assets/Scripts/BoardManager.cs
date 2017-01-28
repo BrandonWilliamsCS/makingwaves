@@ -12,55 +12,44 @@ public class BoardManager : MonoBehaviour
     public GameObject nodePrefab;
     #endregion
 
+    // TODO: richer board format for more starting configurations
     public IList<Vector2> PlayerStarts { get; set; }
 
     /// <summary>
-    /// All the nodes in the game. 
+    /// All the nodes on the board. 
     /// Vector2 is the Grid Position of a specific Node for easy lookup.
     /// </summary>
-    public IDictionary<Vector2, Node> Nodes { get; set; } //!! TODO: expose read-only dictionary, adding special modders as necessary.
+    public IDictionary<Vector2, Node> Nodes { get; set; }
 
     #region Game Loop/Events
-    // Use this for initialization
     void Awake()
     {
         Nodes = new Dictionary<Vector2, Node>();
-        MakeNodes();
-        //StartCoroutine(Test ()); //!! TODO: better to have specialized test/debug options
+        MakeNodes(DEFAULT_BOARD_FILE);
+        //StartCoroutine(Test ()); // TODO: better to have specialized test/debug options
     }
     #endregion
 
-    //!! TODO: replace with direct look at Nodes.
-    public Node GetNodeAt(Vector2 gridPosition)
+    private void MakeNodes(string boardFileName) // TODO: split functions a little nicer
     {
-        return Nodes[gridPosition];
-    }
-
-    private void MakeNodes() //!! TODO: accept board file(name), split functions a little nicer
-    {
-        IList<Vector2> playerStarts;
-        var boardArray = GetBoardArray(DEFAULT_BOARD_FILE, out playerStarts);
-        PlayerStarts = playerStarts; // TODO: richer board format for more starting configurations
+        var boardArray = GetBoardArray(boardFileName);
 
         // create nodes from array
-        const float halfRoot3 = 0.8660254038f; //!! TODO: factor raw math out?
-        var rows = boardArray.Length;
-        var columns = boardArray[0].Length;
-        for (var i = rows - 1; i >= 0; i--) //!! TODO: clarify and comment relationships between world/grid, i/x, etc.
+        var rows = boardArray[0].Length;
+        var columns = boardArray.Length;
+        for (var i = 0; i < columns; i++)
         {
-            for (var j = 0; j < columns; j++)
+            for (var j = 0; j < rows; j++)
             {
                 if (!boardArray[i][j]) continue;
-                var gridPosition = BoardArrayToGridPosition(i, j, rows);
-                var gridX = gridPosition.x;
-                var gridY = gridPosition.y;
 
                 // create the node at the proper place in the world
-                var worldPosition = new Vector2(0.75f * gridY, halfRoot3 * (0.5f * (gridY % 2) + gridX));
+                var worldPosition = WorldPositionForHexGridPosition(i, j);
                 var node = Instantiate(nodePrefab, worldPosition, Quaternion.identity, transform);
 
                 // track the node and keep its grid position
                 var nodeScript = node.GetComponent<Node>();
+                var gridPosition = new Vector2(i, j);
                 nodeScript.GridPosition = gridPosition;
                 Nodes[gridPosition] = nodeScript;
             }
@@ -77,9 +66,8 @@ public class BoardManager : MonoBehaviour
             node.ComputeNeighbors();
         }
     }
-
-    //!! TODO: let's keep the irregular row/col counting within this function; return s.t. board[x][y] is at grid pos. (x, y)
-    private bool[][] GetBoardArray(string fileName, out IList<Vector2> playerStarts)
+    
+    private bool[][] GetBoardArray(string fileName)
     {
         var playerStartsByLetter = new Dictionary<char, Vector2>();
         // read file into string
@@ -90,36 +78,37 @@ public class BoardManager : MonoBehaviour
         var lines = boardString.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
         var rows = lines.Length;
         var columns = lines[0].Length;
-        bool[][] boardArray = new bool[rows][];
+        bool[][] boardArray = new bool[columns][];
         for (var i = 0; i < rows; i++)
         {
-            boardArray[i] = new bool[columns];
             for (var j = 0; j < columns; j++)
             {
-                // track final grid positions of 
+                if (i == 0) boardArray[j] = new bool[rows];
+                var gridX = j;
+                var gridY = rows - 1 - i;
+                // track final grid positions of player locations as well.
                 if (char.IsLetter(lines[i][j]))
                 {
-                    playerStartsByLetter[lines[i][j]] = BoardArrayToGridPosition(i, j, rows);
+                    playerStartsByLetter[lines[i][j]] = new Vector2(gridX, gridY);
                 }
-                boardArray[i][j] = lines[i][j] != '0';
+                boardArray[gridX][gridY] = lines[i][j] != '0';
             }
         }
 
         var playerStartLetters = new List<char>(playerStartsByLetter.Keys);
         playerStartLetters.Sort();
-        playerStarts = new List<Vector2>(playerStartLetters.Count);
+        PlayerStarts = new List<Vector2>(playerStartLetters.Count);
         foreach (var playerStartLetter in playerStartLetters)
         {
-            playerStarts.Add(playerStartsByLetter[playerStartLetter]);
+            PlayerStarts.Add(playerStartsByLetter[playerStartLetter]);
         }
         return boardArray;
     }
 
-    private Vector2 BoardArrayToGridPosition(int currentRow, int currentColumn, int totalRows)
+    private Vector2 WorldPositionForHexGridPosition(int x, int y)
     {
-        var gridX = currentColumn;
-        var gridY = totalRows - 1 - currentRow;
-        return new Vector2(gridX, gridY);
+        const float halfRoot3 = 0.8660254038f;
+        return new Vector2(0.75f * y, halfRoot3 * (0.5f * (y % 2) + x));
     }
 
     private IEnumerator Test()
