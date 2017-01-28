@@ -1,10 +1,18 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class Node : MonoBehaviour
 {
+    //!! TODO: this whole class can be cleaned up.
+    //  - no per-node serializaton needed, since this won't be directly accessible to editor anyway
+    //  - many fields/props can be one or the other
+    //  - establish _ meaining
+    //  - get components in Awake for consistency, namespace cleaning
+    //  - hard-coded values should be gotten elsewhere (unity and/or in-game editable, idea-based)
+    //  - move hex logic into board, or even special manager
+    //  - code regions
+    //  - encapsulation of various fields/properties
+    //  - ideally, some separation of game logic and presentation/engine interaction
 
     #region Vectors to neighbors
     public static readonly float ROOT_3 = Mathf.Sqrt(3);
@@ -103,60 +111,62 @@ public class Node : MonoBehaviour
         }
         set
         {
-			_currentHealth = value;
-			if (IsFloor && IsOwned) {
-				var partOwned = Mathf.Min(_currentHealth / _ownershipThreshold, 1);
-				MySpriteRenderer.sprite = Leader.TileSprite;
-				//neutralSpriteRenderer.color = neutralSpriteRenderer.color.WithAlpha(1 - partOwned);
-				//MySpriteRenderer.color = MySpriteRenderer.color.WithAlpha(partOwned);
-			}
+            _currentHealth = value;
+            if (IsFloor && IsOwned)
+            {
+                var partOwned = Mathf.Min(_currentHealth / _ownershipThreshold, 1);
+                MySpriteRenderer.sprite = Leader.TileSprite;
+                //neutralSpriteRenderer.color = neutralSpriteRenderer.color.WithAlpha(1 - partOwned);
+                //MySpriteRenderer.color = MySpriteRenderer.color.WithAlpha(partOwned);
+            }
         }
-	}
-	private float _calculatedHealth = 0f;
+    }
+    private float _calculatedHealth = 0f;
 
-	[SerializeField]
-	private float _conversionStrength = 1f;
-	public float ConversionStrength
-	{
-		get
-		{
-			return _conversionStrength;
-		}
-	}
+    [SerializeField]
+    private float _conversionStrength = 1f;
+    public float ConversionStrength
+    {
+        get
+        {
+            return _conversionStrength;
+        }
+    }
 
-	private ParticleSystem _influenceEmitter;
-	private ParticleSystem InfluenceEmitter
-	{
-		get
-		{
-			if (_influenceEmitter == null)
-			{
-				_influenceEmitter = GetComponentInChildren<ParticleSystem>();
-			}
-			return _influenceEmitter;
-		}
-	}
+    private ParticleSystem _influenceEmitter;
+    private ParticleSystem InfluenceEmitter
+    {
+        get
+        {
+            if (_influenceEmitter == null)
+            {
+                _influenceEmitter = GetComponentInChildren<ParticleSystem>();
+            }
+            return _influenceEmitter;
+        }
+    }
 
-	private SpriteRenderer _spriteRenderer;
-	protected virtual SpriteRenderer MySpriteRenderer
-	{
-		get
-		{
-			if (_spriteRenderer == null)
-			{
-				_spriteRenderer = this.GetComponent<SpriteRenderer>();
-			}
-			return _spriteRenderer;
-		}
-	}
+    private SpriteRenderer _spriteRenderer;
+    protected virtual SpriteRenderer MySpriteRenderer
+    {
+        get
+        {
+            if (_spriteRenderer == null)
+            {
+                _spriteRenderer = this.GetComponent<SpriteRenderer>();
+            }
+            return _spriteRenderer;
+        }
+    }
 
-	private SpriteRenderer neutralSpriteRenderer;
+    // TODO: work on "status"
+    private SpriteRenderer neutralSpriteRenderer;
 
-	protected virtual void Awake()
-	{
-		debugText = GetComponentInChildren <TextMesh>();
-		//neutralSpriteRenderer = transform.Find("NeutralTile").GetComponent<SpriteRenderer>();
-	}
+    protected virtual void Awake()
+    {
+        debugText = GetComponentInChildren<TextMesh>();
+        //neutralSpriteRenderer = transform.Find("NeutralTile").GetComponent<SpriteRenderer>();
+    }
 
     public IList<Prophet> prophets = new List<Prophet>();
 
@@ -204,6 +214,7 @@ public class Node : MonoBehaviour
         }
     }
 
+    //!! TODO: looooong method. break into sub-functions, and ideally prep for configuration or mechanic change.
     public virtual void Evangelize()
     {
         if (_currentHealth > _evangelismThreshold)
@@ -319,7 +330,7 @@ public class Node : MonoBehaviour
         }
         CurrentHealth = _calculatedHealth;
 
-		DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
+        DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
         debugText.color = _leader == null ? Color.black : _leader.Color;
     }
 
@@ -371,7 +382,9 @@ public class Node : MonoBehaviour
     }
     #endregion
 
-	protected virtual bool IsFloor { get { return true; } }
+
+    //!! TODO: nuff said.
+    protected virtual bool IsFloor { get { return true; } }
 
 
     public void TestNode(bool color)
@@ -395,7 +408,7 @@ public class Node : MonoBehaviour
     {
         _leader = player;
         _currentHealth = health;
-		DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
+        DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
         debugText.color = _leader == null ? Color.black : _leader.Color;
     }
 }

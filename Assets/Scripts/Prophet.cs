@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Prophet : Node
+public class Prophet : Node //!! TODO: Probably switch to a common (abstract?) base class here. Other cleanup mostly shakes out from there.
 {
+    // TODO: various presentation ideas for movement status
 
     private Node currentNode;
     public Node CurrentNode
@@ -20,12 +20,12 @@ public class Prophet : Node
         }
     }
 
-	protected override void Awake()
-	{
-		base.Awake ();
-	}
+    protected override void Awake()
+    {
+        base.Awake();
+    }
 
-	private SpriteRenderer _spriteRenderer2;
+    private SpriteRenderer _spriteRenderer2;
 
 
     public bool CanMoveToNode(Node node)
@@ -72,7 +72,8 @@ public class Prophet : Node
             if (CurrentHealth < OwnershipThreshold)
             {
                 Leader.Prophets.Remove(this);
-            } else
+            }
+            else
             {
                 if (!Leader.Prophets.Contains(this))
                 {
@@ -80,7 +81,7 @@ public class Prophet : Node
                 }
             }
         }
-	}
+    }
 
-	protected override bool IsFloor { get { return false; } }
+    protected override bool IsFloor { get { return false; } }
 }
