@@ -115,7 +115,7 @@ public class Node : MonoBehaviour
             if (IsFloor && IsOwned)
             {
                 var partOwned = Mathf.Min(_currentHealth / _ownershipThreshold, 1);
-                MySpriteRenderer.sprite = Leader.TileSprite;
+                MySpriteRenderer.sprite = Leader.Idea.ownedNodeSprite;
                 //neutralSpriteRenderer.color = neutralSpriteRenderer.color.WithAlpha(1 - partOwned);
                 //MySpriteRenderer.color = MySpriteRenderer.color.WithAlpha(partOwned);
             }
@@ -168,7 +168,7 @@ public class Node : MonoBehaviour
         //neutralSpriteRenderer = transform.Find("NeutralTile").GetComponent<SpriteRenderer>();
     }
 
-    public IList<Prophet> prophets = new List<Prophet>();
+    public IList<Prophet> Prophets = new List<Prophet>();
 
     public IList<Node> neighbors = new List<Node>();
 
@@ -208,7 +208,7 @@ public class Node : MonoBehaviour
             if (MySpriteRenderer != null)
             {
                 var main = InfluenceEmitter.main;
-                main.startColor = Leader.Color;
+                main.startColor = Leader.Idea.color;
             }
             InfluenceEmitter.Play();
         }
@@ -225,14 +225,14 @@ public class Node : MonoBehaviour
 
         //Calculate neighbor evangelism and control
         IList<Node> influencers = new List<Node>();
-        foreach (var prophet in this.prophets)
+        foreach (var prophet in this.Prophets)
         {
             influencers.Add(prophet);
         }
         foreach (var neighbor in neighbors)
         {
             influencers.Add(neighbor);
-            foreach (var prophet in neighbor.prophets)
+            foreach (var prophet in neighbor.Prophets)
             {
                 influencers.Add(prophet);
             }
@@ -331,7 +331,7 @@ public class Node : MonoBehaviour
         CurrentHealth = _calculatedHealth;
 
         DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
-        debugText.color = _leader == null ? Color.black : _leader.Color;
+        debugText.color = _leader == null ? Color.black : _leader.Idea.color;
     }
 
     #region Model
@@ -409,6 +409,6 @@ public class Node : MonoBehaviour
         Leader = player;
         CurrentHealth = TopHealth;
         DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
-        debugText.color = _leader == null ? Color.black : _leader.Color;
+        debugText.color = _leader == null ? Color.black : _leader.Idea.color;
     }
 }

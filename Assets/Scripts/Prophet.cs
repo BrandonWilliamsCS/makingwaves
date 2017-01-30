@@ -13,10 +13,10 @@ public class Prophet : Node //!! TODO: Probably switch to a common (abstract?) b
         {
             if (currentNode != null)
             {
-                currentNode.prophets.Remove(this);
+                currentNode.Prophets.Remove(this);
             }
             currentNode = value;
-            currentNode.prophets.Add(this);
+            currentNode.Prophets.Add(this);
         }
     }
 
@@ -71,17 +71,7 @@ public class Prophet : Node //!! TODO: Probably switch to a common (abstract?) b
         base.ApplyInfluence();
         if (Leader != null)
         {
-            if (CurrentHealth < OwnershipThreshold)
-            {
-                Leader.Prophets.Remove(this);
-            }
-            else
-            {
-                if (!Leader.Prophets.Contains(this))
-                {
-                    Leader.Prophets.Add(this);
-                }
-            }
+            Leader.UpdateProphetOwnership(this, CurrentHealth >= OwnershipThreshold);
         }
     }
 

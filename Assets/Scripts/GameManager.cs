@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject readyOverlay;
     private Image readyOverlayImage; // TODO: this would go well in a specialized "UI" class, along with the victory panel and scores.
+    private IDictionary<string, Text> scoreDisplays;
     #endregion
 
     public float victoryScore = 10;
@@ -98,8 +99,8 @@ public class GameManager : MonoBehaviour
         {
             var node = board.Nodes[start];
             player.InitializeProphets(node);
-            // TODO: UI
-            player.ScoreDisplay = GameObject.Find(player.Name + "Score").GetComponent<Text>();
+            // TODO: UI, maybe this is by idea rather than player?
+            scoreDisplays[player.Name] = GameObject.Find(player.Name + "Score").GetComponent<Text>();
         }
         else
         {
@@ -118,7 +119,8 @@ public class GameManager : MonoBehaviour
         if (hit.transform)
         {
             Node node = hit.transform.GetComponent<Node>();
-            var canMove = !playerMoved && players[currentPlayer + 1].Prophets[0].MoveProphet(node);
+            // TODO: support multiple prophets along with generally more complex turn state and UX
+            var canMove = !playerMoved && players[currentPlayer + 1].GetMovableProphets()[0].MoveProphet(node);
             if (canMove)
             {
                 playerMoved = true;
@@ -144,10 +146,8 @@ public class GameManager : MonoBehaviour
         foreach (var node in board.Nodes.Values)
         {
             node.AcceptInfluence();
-        }
-        foreach (var player in players)
-        {
-            foreach (var prophet in player.Prophets)
+            // get prophets on board rather than all prophets belonging to players.
+            foreach (var prophet in node.Prophets)
             {
                 prophet.AcceptInfluence();
             }
@@ -155,10 +155,7 @@ public class GameManager : MonoBehaviour
         foreach (var node in board.Nodes.Values)
         {
             node.ApplyInfluence();
-        }
-        foreach (var player in players)
-        {
-            foreach (var prophet in player.Prophets)
+            foreach (var prophet in node.Prophets)
             {
                 prophet.ApplyInfluence();
             }
@@ -180,8 +177,9 @@ public class GameManager : MonoBehaviour
         Player leadingPlayer = null;
         foreach (var player in players)
         {
-            if (player.ScoreDisplay != null)
-                player.ScoreDisplay.text = "Score: " + player.Score;
+            var scoreDisplay = scoreDisplays[player.Name];
+            if (scoreDisplay != null)
+                scoreDisplay.text = "Score: " + player.Score;
             if (player.Score > maxScore)
             {
                 maxScore = player.Score;
