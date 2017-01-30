@@ -1,7 +1,6 @@
 ﻿using MakingWaves.Model;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -21,8 +20,7 @@ public class Player : MonoBehaviour
         foreach (var prophet in ownedProphets)
         {
             prophet.GetComponentInChildren<SpriteRenderer>().sprite = Idea.prophetSprite;
-            prophet.Leader = this;
-            prophet.CurrentHealth = prophet.TopHealth;
+            prophet.SetOwner(this);
 
             if (startNode != null)
             {

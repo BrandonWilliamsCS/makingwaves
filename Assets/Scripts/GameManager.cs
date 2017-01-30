@@ -100,7 +100,11 @@ public class GameManager : MonoBehaviour
             var node = board.Nodes[start];
             player.InitializeProphets(node);
             // TODO: UI, maybe this is by idea rather than player?
-            scoreDisplays[player.Name] = GameObject.Find(player.Name + "Score").GetComponent<Text>();
+            var scoreObject = GameObject.Find(player.Name + "Score");
+            if (scoreObject != null)
+            {
+                scoreDisplays[player.Name] = scoreObject.GetComponent<Text>();
+            }
         }
         else
         {

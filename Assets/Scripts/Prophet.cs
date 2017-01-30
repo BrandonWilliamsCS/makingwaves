@@ -71,7 +71,7 @@ public class Prophet : Node //!! TODO: Probably switch to a common (abstract?) b
         base.ApplyInfluence();
         if (Leader != null)
         {
-            Leader.UpdateProphetOwnership(this, CurrentHealth >= OwnershipThreshold);
+            Leader.UpdateProphetOwnership(this, IsOwned);
         }
     }
 
