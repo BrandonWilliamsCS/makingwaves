@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using MakingWaves.Model;
+using System.Collections;
 using UnityEngine;
 
-public class Prophet : Node //!! TODO: Probably switch to a common (abstract?) base class here. Other cleanup mostly shakes out from there.
+public class Prophet : Mind
 {
     // TODO: various presentation ideas for movement status
 
@@ -20,14 +21,7 @@ public class Prophet : Node //!! TODO: Probably switch to a common (abstract?) b
         }
     }
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
-    private SpriteRenderer _spriteRenderer2;
-
-
+    #region Prophet Movement
     public bool CanMoveToNode(Node node)
     {
         // Validate this prophet can move the distance to the given node
@@ -57,23 +51,14 @@ public class Prophet : Node //!! TODO: Probably switch to a common (abstract?) b
             yield return null;
         }
     }
-
-    public override void AcceptInfluence()
-    {
-        //!! TODO: better way to disable
-        if (!gameObject.activeInHierarchy) return;
-        neighbors = currentNode.neighbors;
-        base.AcceptInfluence();
-    }
+    #endregion
 
     public override void ApplyInfluence()
     {
         base.ApplyInfluence();
-        if (Leader != null)
+        if (Owner != null)
         {
-            Leader.UpdateProphetOwnership(this, IsOwned);
+            Owner.UpdateProphetOwnership(this, IsOwned);
         }
     }
-
-    protected override bool IsFloor { get { return false; } }
 }

@@ -149,11 +149,12 @@ public class GameManager : MonoBehaviour
     {
         foreach (var node in board.Nodes.Values)
         {
-            node.AcceptInfluence();
+            var influencers = node.GetInfluencers();
+            node.AcceptInfluence(influencers);
             // get prophets on board rather than all prophets belonging to players.
             foreach (var prophet in node.Prophets)
             {
-                prophet.AcceptInfluence();
+                prophet.AcceptInfluence(influencers);
             }
         }
         foreach (var node in board.Nodes.Values)

@@ -1,16 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using MakingWaves.Model;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Node : MonoBehaviour
+public class Node : Mind
 {
-    //!! TODO: this whole class can be cleaned up.
-    //  - no per-node serializaton needed, since this won't be directly accessible to editor anyway
-    //  - many fields/props can be one or the other
-    //  - establish _ meaining
-    //  - get components in Awake for consistency, namespace cleaning
-    //  - hard-coded values should be gotten elsewhere (unity and/or in-game editable, idea-based)
+    // TODO:
     //  - move hex logic into board, or even special manager
-    //  - code regions
     //  - encapsulation of various fields/properties
     //  - ideally, some separation of game logic and presentation/engine interaction
 
@@ -34,75 +29,12 @@ public class Node : MonoBehaviour
     };
     #endregion
 
-    #region Configurable
-    // TODO: better option than storing defaults here?
-    [SerializeField]
-    private float topHealth = 10f;
-
-    /// <summary>
-    /// Gets the health threshold.
-    /// This is how many influence points it takes before we can emit influence
-    /// </summary>
-    /// <value>The health threshold.</value>
-    [SerializeField]
-    private float evangelismThreshold = 7f;
-
-    /// <summary>
-    /// Gets the health threshold.
-    /// This is how many influence points it takes before we can emit influence
-    /// </summary>
-    /// <value>The health threshold.</value>
-    [SerializeField]
-    private float ownershipThreshold = 3f;
-
-    [SerializeField]
-    private float conversionStrength = 1f;
-    #endregion
-
     #region UI
-    private TextMesh debugText;
-    public virtual string DebugText { get { return debugText.text; } set { debugText.text = value; } }
-
-    // TODO: these need work.
-    private ParticleSystem _influenceEmitter;
-    private ParticleSystem InfluenceEmitter
-    {
-        get
-        {
-            if (_influenceEmitter == null)
-            {
-                _influenceEmitter = GetComponentInChildren<ParticleSystem>();
-            }
-            return _influenceEmitter;
-        }
-    }
-    private SpriteRenderer _spriteRenderer;
-    protected virtual SpriteRenderer MySpriteRenderer
-    {
-        get
-        {
-            if (_spriteRenderer == null)
-            {
-                _spriteRenderer = this.GetComponent<SpriteRenderer>();
-            }
-            return _spriteRenderer;
-        }
-    }
+    private SpriteRenderer spriteRenderer;
     // TODO: work on "status"
     private SpriteRenderer neutralSpriteRenderer;
-
-    private void Emit()
-    {
-        if (InfluenceEmitter != null)
-        {
-            if (MySpriteRenderer != null)
-            {
-                var main = InfluenceEmitter.main;
-                main.startColor = Leader.Idea.color;
-            }
-            InfluenceEmitter.Play();
-        }
-    }
+    private TextMesh debugText;
+    public virtual string DebugText { get { return debugText.text; } set { debugText.text = value; } }
     #endregion
 
     #region Game Loop/Events
@@ -110,169 +42,15 @@ public class Node : MonoBehaviour
     {
         Prophets = new List<Prophet>();
         debugText = GetComponentInChildren<TextMesh>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         //neutralSpriteRenderer = transform.Find("NeutralTile").GetComponent<SpriteRenderer>();
     }
     #endregion
 
-    #region Game Mechanics
-    private Player _leader;
-    public Player Leader
-    {
-        get { return _currentHealth > 0 ? _leader : null; }
-        set { _leader = value; }
-    }
-
-    [SerializeField]
-    private float _currentHealth = 0f;
-    /// <summary>
-    /// Gets the current health.
-    /// </summary>
-    /// <value>The current health.</value>
-    public float CurrentHealth
-    {
-        get
-        {
-            return _currentHealth;
-        }
-        set
-        {
-            _currentHealth = value;
-            if (IsFloor && IsOwned)
-            {
-                var partOwned = Mathf.Min(_currentHealth / ownershipThreshold, 1);
-                MySpriteRenderer.sprite = Leader.Idea.ownedNodeSprite;
-                //neutralSpriteRenderer.color = neutralSpriteRenderer.color.WithAlpha(1 - partOwned);
-                //MySpriteRenderer.color = MySpriteRenderer.color.WithAlpha(partOwned);
-            }
-        }
-    }
-    private float _calculatedHealth = 0f;
-
-    //!! TODO: looooong method. break into sub-functions, and ideally prep for configuration or mechanic change.
-    public virtual void AcceptInfluence()
-    {
-        if (_currentHealth > evangelismThreshold)
-        {
-            Emit();
-            Leader.Score += Leader.ConversionRateMultiplier * conversionStrength;
-        }
-
-        //Calculate neighbor evangelism and control
-        IList<Node> influencers = new List<Node>();
-        foreach (var prophet in this.Prophets)
-        {
-            influencers.Add(prophet);
-        }
-        foreach (var neighbor in neighbors)
-        {
-            influencers.Add(neighbor);
-            foreach (var prophet in neighbor.Prophets)
-            {
-                influencers.Add(prophet);
-            }
-        }
-        _calculatedHealth = CurrentHealth;
-        float neutralConversionRateMultiplier = .2f;
-        if (_calculatedHealth > 0f)
-        {
-            foreach (var influencer in influencers)
-            {
-                if (influencer.CanEvangelize)
-                {
-                    if (_leader == influencer._leader)
-                    {
-                        _calculatedHealth += influencer._leader.ConversionRateMultiplier * influencer.conversionStrength;
-                    }
-                    else
-                    {
-                        _calculatedHealth -= influencer._leader.ConversionRateMultiplier * influencer.conversionStrength;
-                    }
-                }
-                else
-                {
-                    if (!influencer.IsOwned)
-                    {
-                        _calculatedHealth -= neutralConversionRateMultiplier * influencer.conversionStrength;
-                    }
-                }
-            }
-        }
-        else
-        {
-            IDictionary<Player, float> influenceScore = new Dictionary<Player, float>();
-            float neutralInfluence = 0;
-            foreach (var influencer in influencers)
-            {
-                if (influencer.CanEvangelize)
-                {
-                    if (influenceScore.ContainsKey(influencer._leader))
-                    {
-                        influenceScore[influencer._leader] += influencer._leader.ConversionRateMultiplier * influencer.conversionStrength;
-                    }
-                    else
-                    {
-                        influenceScore[influencer._leader] = influencer._leader.ConversionRateMultiplier * influencer.conversionStrength;
-                    }
-                }
-                else
-                {
-                    if (!influencer.IsOwned)
-                    {
-                        neutralInfluence += neutralConversionRateMultiplier * influencer.conversionStrength;
-                    }
-                }
-            }
-            Player effectiveLeader = null;
-            foreach (var scorePair in influenceScore)
-            {
-                if (scorePair.Value > _calculatedHealth)
-                {
-                    effectiveLeader = scorePair.Key;
-                    _calculatedHealth = scorePair.Value;
-                }
-            }
-            foreach (var scorePair in influenceScore)
-            {
-                if (scorePair.Key != effectiveLeader)
-                {
-                    _calculatedHealth -= scorePair.Value;
-                }
-            }
-            _calculatedHealth -= neutralInfluence;
-            if (_calculatedHealth > 0)
-            {
-                //Leader.nodes.remove(this);
-                _leader = effectiveLeader;
-                //Leader.nodes.add(this);
-            }
-        }
-    }
-
-    public bool IsOwned { get { return CurrentHealth >= ownershipThreshold; } }
-
-    public bool CanEvangelize { get { return CurrentHealth >= evangelismThreshold; } }
-
-    public virtual void ApplyInfluence()
-    {
-        if (_calculatedHealth > topHealth)
-        {
-            _calculatedHealth = topHealth;
-        }
-        else if (_calculatedHealth < 0)
-        {
-            _calculatedHealth = 0;
-        }
-        CurrentHealth = _calculatedHealth;
-
-        DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
-        debugText.color = _leader == null ? Color.black : _leader.Idea.color;
-    }
-    #endregion
-
-    public IList<Prophet> Prophets { get; set; }
-
     #region Spatial
     public IList<Node> neighbors = new List<Node>();
+
+    public IList<Prophet> Prophets { get; set; }
 
     public void ComputeNeighbors()
     {
@@ -350,8 +128,52 @@ public class Node : MonoBehaviour
     }
     #endregion
 
-    //!! TODO: nuff said.
-    protected virtual bool IsFloor { get { return true; } }
+    #region Influence Mechanics
+    public IList<Mind> GetInfluencers()
+    {
+        // TODO: influencers include current node + neighbors, and prophets in each of those.
+        IList<Mind> influencers = new List<Mind>();
+        foreach (var prophet in Prophets)
+        {
+            influencers.Add(prophet);
+        }
+        foreach (var neighbor in neighbors)
+        {
+            influencers.Add(neighbor);
+            foreach (var prophet in neighbor.Prophets)
+            {
+                influencers.Add(prophet);
+            }
+        }
+        return influencers;
+    }
+
+    public override void ApplyInfluence()
+    {
+        base.ApplyInfluence();
+        UpdateOwner();
+    }
+
+    public override void SetOwner(Player player)
+    {
+        base.SetOwner(player);
+        UpdateOwner();
+    }
+
+    private void UpdateOwner()
+    {
+        if (IsOwned)
+        {
+            var partOwned = Mathf.Min(currentHealth / ownershipThreshold, 1);
+            spriteRenderer.sprite = Owner.Idea.ownedNodeSprite;
+            //neutralSpriteRenderer.color = neutralSpriteRenderer.color.WithAlpha(1 - partOwned);
+            //MySpriteRenderer.color = MySpriteRenderer.color.WithAlpha(partOwned);
+
+            DebugText = currentHealth > 0 ? string.Format("{0:g2}", currentHealth) : "";
+            debugText.color = Owner == null ? Color.black : Owner.Idea.color;
+        }
+    }
+    #endregion
 
     public void TestNode(bool color)
     {
@@ -368,13 +190,5 @@ public class Node : MonoBehaviour
             var otherSpriteRenderer = n.gameObject.GetComponent<SpriteRenderer>();
             otherSpriteRenderer.color = color ? Color.red : Color.white;
         }
-    }
-
-    public void SetOwner(Player player)
-    {
-        Leader = player;
-        CurrentHealth = topHealth;
-        DebugText = _currentHealth > 0 ? string.Format("{0:g2}", _currentHealth) : "";
-        debugText.color = _leader == null ? Color.black : _leader.Idea.color;
     }
 }
