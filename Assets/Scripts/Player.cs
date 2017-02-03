@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 
     public string Name { get { return Idea.ideaName; } }
 
-    public float ConversionRateMultiplier { get { return Idea.baseInfluenceMultiplier; } }
+    public float InfluenceRateMultiplier { get { return Idea.baseInfluenceMultiplier; } }
 
     public float Score { get; set; }
 
@@ -17,6 +17,10 @@ public class Player : MonoBehaviour
 
     public void InitializeProphets(Node startNode)
     {
+        if (startNode != null)
+        {
+            startNode.SetOwner(this);
+        }
         foreach (var prophet in ownedProphets)
         {
             prophet.GetComponentInChildren<SpriteRenderer>().sprite = Idea.prophetSprite;
@@ -26,7 +30,6 @@ public class Player : MonoBehaviour
             {
                 prophet.CurrentNode = startNode;
                 prophet.transform.position = startNode.transform.position;
-                startNode.SetOwner(this);
             }
             else
             {

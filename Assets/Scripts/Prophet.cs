@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Prophet : Mind
+public class Prophet : Unit
 {
     // TODO: various presentation ideas for movement status
 
@@ -56,9 +56,9 @@ public class Prophet : Mind
     public override void ApplyInfluence()
     {
         base.ApplyInfluence();
-        if (Owner != null)
+        if (Mind.Owner != null)
         {
-            Owner.UpdateProphetOwnership(this, IsOwned);
+            Mind.Owner.UpdateProphetOwnership(this, Mind.IsOwned);
         }
     }
 }

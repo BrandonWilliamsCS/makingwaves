@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Node : Mind
+public class Node : Unit
 {
     // TODO:
     //  - move hex logic into board, or even special manager
@@ -38,8 +38,9 @@ public class Node : Mind
     #endregion
 
     #region Game Loop/Events
-    protected virtual void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         Prophets = new List<Prophet>();
         debugText = GetComponentInChildren<TextMesh>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -135,14 +136,14 @@ public class Node : Mind
         IList<Mind> influencers = new List<Mind>();
         foreach (var prophet in Prophets)
         {
-            influencers.Add(prophet);
+            influencers.Add(prophet.Mind);
         }
         foreach (var neighbor in neighbors)
         {
-            influencers.Add(neighbor);
+            influencers.Add(neighbor.Mind);
             foreach (var prophet in neighbor.Prophets)
             {
-                influencers.Add(prophet);
+                influencers.Add(prophet.Mind);
             }
         }
         return influencers;
@@ -151,26 +152,28 @@ public class Node : Mind
     public override void ApplyInfluence()
     {
         base.ApplyInfluence();
-        UpdateOwner();
+        UpdateOwnerUI();
     }
 
     public override void SetOwner(Player player)
     {
         base.SetOwner(player);
-        UpdateOwner();
+        UpdateOwnerUI();
     }
 
-    private void UpdateOwner()
+    private void UpdateOwnerUI()
     {
-        if (IsOwned)
+        if (Mind.IsOwned)
         {
-            var partOwned = Mathf.Min(currentHealth / ownershipThreshold, 1);
-            spriteRenderer.sprite = Owner.Idea.ownedNodeSprite;
+            // TODO: move some logic to mind
+            //var partOwned = Mathf.Min(currentHealth / ownershipThreshold, 1);
+            spriteRenderer.sprite = Mind.Owner.Idea.ownedNodeSprite;
             //neutralSpriteRenderer.color = neutralSpriteRenderer.color.WithAlpha(1 - partOwned);
             //MySpriteRenderer.color = MySpriteRenderer.color.WithAlpha(partOwned);
 
-            DebugText = currentHealth > 0 ? string.Format("{0:g2}", currentHealth) : "";
-            debugText.color = Owner == null ? Color.black : Owner.Idea.color;
+            // TODO: special debug mode or layer
+            DebugText = Mind.CurrentHealth > 0 ? string.Format("{0:g2}", Mind.CurrentHealth) : "";
+            debugText.color = Mind.Owner == null ? Color.black : Mind.Owner.Idea.color;
         }
     }
     #endregion

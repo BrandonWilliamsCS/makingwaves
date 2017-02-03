@@ -1140,31 +1140,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 1891105981260812, guid: b18ed97194e6e40f894bc1e5069a16cb,
     type: 2}
+  prophetPrefab: {fileID: 1178957861859682, guid: 7c634ef43eac6a349855de9dfe44c87c,
+    type: 2}
   boardManagerPrefab: {fileID: 1414404927767242, guid: 65a68dc3c8d934b178ab16e21dc47a25,
     type: 2}
   ideas:
   - ideaName: Neutral
+    baseInfluenceMultiplier: 1
     color: {r: 0.75, g: 0.75, b: 0.75, a: 1}
     prophetSprite: {fileID: 21300000, guid: 995de1abece174c45a164130976257b0, type: 3}
     ownedNodeSprite: {fileID: 21300000, guid: 3fbe8234885d64c999a38f8a1e11b6d1, type: 3}
   - ideaName: Fire
+    baseInfluenceMultiplier: 1
     color: {r: 0.5921569, g: 0.039215688, b: 0.101960786, a: 1}
     prophetSprite: {fileID: 21300000, guid: 804b2dac1f33a412a861ee1f2567618a, type: 3}
     ownedNodeSprite: {fileID: 21300000, guid: 37588e39436a44b7c8ac12f9f82312f0, type: 3}
   - ideaName: Earth
+    baseInfluenceMultiplier: 1
     color: {r: 0.6313726, g: 0.6784314, b: 0, a: 1}
     prophetSprite: {fileID: 21300000, guid: a44186ba75c524bfd811258b4a3d931c, type: 3}
     ownedNodeSprite: {fileID: 21300000, guid: afa894aff69b245b5825403456df2699, type: 3}
   - ideaName: Water
+    baseInfluenceMultiplier: 1
     color: {r: 0.20784314, g: 0.22352941, b: 0.6666667, a: 1}
     prophetSprite: {fileID: 21300000, guid: 3fd4a2e35f7da467eb04e1536d6cdb58, type: 3}
     ownedNodeSprite: {fileID: 21300000, guid: 96c60539b95134a039bb33f2bc52addc, type: 3}
   - ideaName: Air
+    baseInfluenceMultiplier: 1
     color: {r: 0.33333334, g: 0.5568628, b: 0.54901963, a: 1}
     prophetSprite: {fileID: 21300000, guid: abd35c0bc90714c82a578d1377698d96, type: 3}
     ownedNodeSprite: {fileID: 21300000, guid: 584b0ac6023f04bf587f35325fd28d75, type: 3}
   victoryPanel: {fileID: 488586057}
   readyOverlay: {fileID: 27528000}
+  victoryScore: 10
 --- !u!4 &2121157258
 Transform:
   m_ObjectHideFlags: 0

@@ -30,19 +30,21 @@ public class GameManager : MonoBehaviour
     #region Unity Injected
     // set from editor
     [SerializeField]
-    private GameObject playerPrefab;
+    private GameObject playerPrefab = null;
     [SerializeField]
-    private GameObject boardManagerPrefab;
+    private GameObject prophetPrefab = null;
+    [SerializeField]
+    private GameObject boardManagerPrefab = null;
     public Idea[] ideas;
     #endregion
 
     #region UI
     [SerializeField]
-    private GameObject victoryPanel;
+    private GameObject victoryPanel = null;
     [SerializeField]
-    private GameObject readyOverlay;
+    private GameObject readyOverlay = null;
     private Image readyOverlayImage; // TODO: this would go well in a specialized "UI" class, along with the victory panel and scores.
-    private IDictionary<string, Text> scoreDisplays;
+    private IDictionary<string, Text> scoreDisplays = new Dictionary<string, Text>();
     #endregion
 
     public float victoryScore = 10;
@@ -97,6 +99,8 @@ public class GameManager : MonoBehaviour
         player.Idea = ideas[players.Count];
         if (start.x >= 0)
         {
+            // TODO: for now, assign one prophet per player. This may change.
+            GiveProphet(player);
             var node = board.Nodes[start];
             player.InitializeProphets(node);
             // TODO: UI, maybe this is by idea rather than player?
@@ -113,6 +117,13 @@ public class GameManager : MonoBehaviour
 
         players.Add(player);
         return player;
+    }
+
+    private void GiveProphet(Player player)
+    {
+        var prophetObject = Instantiate(prophetPrefab);
+        var prophet = prophetObject.GetComponent<Prophet>();
+        player.UpdateProphetOwnership(prophet, owned: true);
     }
     #endregion
 
@@ -164,6 +175,13 @@ public class GameManager : MonoBehaviour
             {
                 prophet.ApplyInfluence();
             }
+
+
+            // TODO: Should prophets separately add to score?
+            if (node.Mind.CanInfluence)
+            {
+                node.Mind.Owner.Score += node.Mind.InfluenceStrength;
+            }
         }
 
         ProcessScores();
@@ -182,8 +200,8 @@ public class GameManager : MonoBehaviour
         Player leadingPlayer = null;
         foreach (var player in players)
         {
-            var scoreDisplay = scoreDisplays[player.Name];
-            if (scoreDisplay != null)
+            Text scoreDisplay;
+            if (scoreDisplays.TryGetValue(player.Name, out scoreDisplay))
                 scoreDisplay.text = "Score: " + player.Score;
             if (player.Score > maxScore)
             {

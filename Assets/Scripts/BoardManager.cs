@@ -66,7 +66,7 @@ public class BoardManager : MonoBehaviour
             node.ComputeNeighbors();
         }
     }
-    
+
     private bool[][] GetBoardArray(string fileName)
     {
         var playerStartsByLetter = new Dictionary<char, Vector2>();
