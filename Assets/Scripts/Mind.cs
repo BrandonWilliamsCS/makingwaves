@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MakingWaves.Model
 {
@@ -15,12 +16,14 @@ namespace MakingWaves.Model
 
         public bool IsOwned { get { return CurrentHealth >= ownershipThreshold; } }
 
+        public float PartOwned { get { return Math.Min(CurrentHealth / ownershipThreshold, 1); } }
+
         public bool CanInfluence { get { return CurrentHealth >= evangelismThreshold; } }
 
-        public float InfluenceStrength { get { return IsOwned ? baseInfluenceMultiplier * leader.InfluenceRateMultiplier : 0; } }
+        public float InfluenceStrength { get { return IsOwned ? baseInfluenceMultiplier * Leader.InfluenceRateMultiplier : 0; } }
 
-        private Player leader;
-        public Player Owner { get { return IsOwned ? leader : null; } }
+        public Player Leader { get; set; }
+        public Player Owner { get { return IsOwned ? Leader : null; } }
 
         // TODO: looooong method. break into sub-functions, and ideally prep for configuration or mechanic change.
         public void AcceptInfluence(IEnumerable<Mind> influencers)
@@ -35,8 +38,8 @@ namespace MakingWaves.Model
                 {
                     if (influencer.CanInfluence)
                     {
-                        var ownerShipMultiplier = leader == influencer.leader ? 1 : -1;
-                        calculatedHealth += influencer.leader.InfluenceRateMultiplier * influencer.baseInfluenceMultiplier * ownerShipMultiplier;
+                        var ownerShipMultiplier = Leader == influencer.Leader ? 1 : -1;
+                        calculatedHealth += influencer.Leader.InfluenceRateMultiplier * influencer.baseInfluenceMultiplier * ownerShipMultiplier;
                     }
                     else
                     {
@@ -55,13 +58,13 @@ namespace MakingWaves.Model
                 {
                     if (influencer.CanInfluence)
                     {
-                        if (influenceScore.ContainsKey(influencer.leader))
+                        if (influenceScore.ContainsKey(influencer.Leader))
                         {
-                            influenceScore[influencer.leader] += influencer.leader.InfluenceRateMultiplier * influencer.baseInfluenceMultiplier;
+                            influenceScore[influencer.Leader] += influencer.Leader.InfluenceRateMultiplier * influencer.baseInfluenceMultiplier;
                         }
                         else
                         {
-                            influenceScore[influencer.leader] = influencer.leader.InfluenceRateMultiplier * influencer.baseInfluenceMultiplier;
+                            influenceScore[influencer.Leader] = influencer.Leader.InfluenceRateMultiplier * influencer.baseInfluenceMultiplier;
                         }
                     }
                     else
@@ -91,7 +94,7 @@ namespace MakingWaves.Model
                 calculatedHealth -= neutralInfluence;
                 if (calculatedHealth > 0)
                 {
-                    leader = effectiveLeader;
+                    Leader = effectiveLeader;
                 }
             }
         }
@@ -111,7 +114,7 @@ namespace MakingWaves.Model
 
         public void SetOwner(Player player)
         {
-            leader = player;
+            Leader = player;
             CurrentHealth = topHealth;
         }
     }

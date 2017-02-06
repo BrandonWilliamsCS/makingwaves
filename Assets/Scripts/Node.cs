@@ -30,7 +30,9 @@ public class Node : Unit
     #endregion
 
     #region UI
-    private SpriteRenderer spriteRenderer;
+    private static readonly string NEUTRAL_TILE_NAME = "NeutralTile";
+    private static readonly string OWNED_TILE_NAME = "OwnedTile";
+    private SpriteRenderer ownedSpriteRenderer;
     // TODO: work on "status"
     private SpriteRenderer neutralSpriteRenderer;
     private TextMesh debugText;
@@ -43,8 +45,8 @@ public class Node : Unit
         base.Awake();
         Prophets = new List<Prophet>();
         debugText = GetComponentInChildren<TextMesh>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        //neutralSpriteRenderer = transform.Find("NeutralTile").GetComponent<SpriteRenderer>();
+        neutralSpriteRenderer = transform.Find(NEUTRAL_TILE_NAME).GetComponent<SpriteRenderer>();
+        ownedSpriteRenderer = transform.Find(OWNED_TILE_NAME).GetComponent<SpriteRenderer>();
     }
     #endregion
 
@@ -163,18 +165,17 @@ public class Node : Unit
 
     private void UpdateOwnerUI()
     {
-        if (Mind.IsOwned)
+        var partOwned = Mind.PartOwned;
+        // TODO: something feels off about constantly doing so much object chaining.
+        if (partOwned > 0)
         {
-            // TODO: move some logic to mind
-            //var partOwned = Mathf.Min(currentHealth / ownershipThreshold, 1);
-            spriteRenderer.sprite = Mind.Owner.Idea.ownedNodeSprite;
-            //neutralSpriteRenderer.color = neutralSpriteRenderer.color.WithAlpha(1 - partOwned);
-            //MySpriteRenderer.color = MySpriteRenderer.color.WithAlpha(partOwned);
-
-            // TODO: special debug mode or layer
-            DebugText = Mind.CurrentHealth > 0 ? string.Format("{0:g2}", Mind.CurrentHealth) : "";
-            debugText.color = Mind.Owner == null ? Color.black : Mind.Owner.Idea.color;
+            ownedSpriteRenderer.sprite = Mind.Leader.Idea.ownedNodeSprite;
         }
+        ownedSpriteRenderer.color = ownedSpriteRenderer.color.WithAlpha(partOwned);
+        
+        // TODO: special debug mode or layer
+        DebugText = Mind.CurrentHealth > 0 ? string.Format("{0:g2}", Mind.CurrentHealth) : "";
+        debugText.color = Mind.Owner == null ? Color.black : Mind.Owner.Idea.color;
     }
     #endregion
 
